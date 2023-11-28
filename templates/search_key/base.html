@@ -1,22 +1,12 @@
 <!doctype html>
 {% load static %}
+{% load django_bootstrap5 %}
 
 <html lang="uk">
 <head>
-
-
-    <title>{% block title %}{% endblock %} - Dev</title>
-
-
+  <title>{% block title %}{% endblock %} - Dev</title>
 </head>
-
 <body>
-
-
-<header>
-
-    {% block content %}{% endblock %}
-
-
+{% block content %}{% endblock %}
 </body>
 </html>

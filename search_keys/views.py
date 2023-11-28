@@ -2,6 +2,7 @@ from django.db import models
 from django.shortcuts import get_object_or_404
 from django.views import generic
 
+from search_keys.forms import CellSearchForm
 from search_keys.models import Building, Street
 
 
@@ -25,11 +26,18 @@ class CellInfoView(generic.TemplateView):
         """
         context = super().get_context_data(**kwargs)
         prefix = self.request.GET.get("prefix", "")
-        street_name = self.request.GET.get("street_name", "")
+        street_name = self.request.GET.get("street_name", "").title()
         building_number = self.request.GET.get("building_number", "")
 
         cell_title = self.get_cell_title(prefix, street_name, building_number)
         context["cell_title"] = cell_title
+        context["form"] = CellSearchForm(
+            initial={
+                "prefix": prefix,
+                "street_name": street_name,
+                "building_number": building_number,
+            }
+        )
         return context
 
     @staticmethod
@@ -37,12 +45,14 @@ class CellInfoView(generic.TemplateView):
         """
         Get the cell title based on the given street name and building number.
         """
-        street = get_object_or_404(
-            Street,
-            models.Q(name=street_name) | models.Q(old_name=street_name),
-            models.Q(prefix=prefix) | models.Q(old_prefix=prefix),
-        )
 
+        try:
+            street = Street.objects.get(
+                models.Q(name=street_name) | models.Q(old_name=street_name),
+                models.Q(prefix=prefix) | models.Q(old_prefix=prefix),
+            )
+        except Street.DoesNotExist:
+            return "Cell not available"
         building = get_object_or_404(
             Building, street=street, number=building_number
         )
