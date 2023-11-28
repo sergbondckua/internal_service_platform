@@ -1,9 +1,9 @@
 from django.db import models
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, render
 from django.views import generic
 
 from search_keys.forms import CellSearchForm
-from search_keys.models import Building, Street
+from search_keys.models import Building, Street, Cell
 
 
 class BuildingsListView(generic.ListView):
@@ -21,39 +21,33 @@ class CellInfoView(generic.TemplateView):
     template_name = "search_key/cell_info.html"
 
     def get_context_data(self, **kwargs):
-        """
-        Override the base class method to provide additional context data.
-        """
         context = super().get_context_data(**kwargs)
-        prefix = self.request.GET.get("prefix", "")
-        street_name = self.request.GET.get("street_name", "").title()
-        building_number = self.request.GET.get("building_number", "")
-
-        cell_title = self.get_cell_title(prefix, street_name, building_number)
-        context["cell_title"] = cell_title
-        context["form"] = CellSearchForm(
-            initial={
-                "prefix": prefix,
-                "street_name": street_name,
-                "building_number": building_number,
-            }
-        )
+        context["form"] = CellSearchForm(self.request.GET)
         return context
 
-    @staticmethod
-    def get_cell_title(prefix, street_name, building_number):
-        """
-        Get the cell title based on the given street name and building number.
-        """
+    def get(self, request, *args, **kwargs):
+        form = CellSearchForm(request.GET)
+        if form.is_valid():
+            prefix = form.cleaned_data.get("prefix")
+            street_name = form.cleaned_data.get("street_name")
+            building_number = form.cleaned_data.get("building_number")
 
-        try:
-            street = Street.objects.get(
-                models.Q(name=street_name) | models.Q(old_name=street_name),
-                models.Q(prefix=prefix) | models.Q(old_prefix=prefix),
+            # Формируем параметры для фильтрации
+            filters = {}
+            if prefix:
+                filters["street__prefix"] = prefix
+            if street_name:
+                filters["street__name__iexact"] = street_name
+            if building_number:
+                filters["number"] = building_number
+
+            # Выполняем поиск в базе данных
+            cells = Building.objects.filter(**filters)
+
+            return render(
+                request,
+                "search_key/results.html",
+                {"cells": cells, "form": form},
             )
-        except Street.DoesNotExist:
-            return "Cell not available"
-        building = get_object_or_404(
-            Building, street=street, number=building_number
-        )
-        return building.cell.title
+
+        return render(request, self.template_name, {"form": form})
