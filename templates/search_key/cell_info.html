@@ -1,4 +1,4 @@
-{% extends "search_key/base.html" %}
+{% extends "base.html" %}
 {% load django_bootstrap5 %}
 {% load crispy_forms_filters %}
 
@@ -7,10 +7,9 @@
 {% endblock %}
 
 {% block content %}
-  <form action="" method="get" class="form-inline">
-    {#        {% bootstrap_form form %}#}
-    {{ form|crispy }}
-    {% bootstrap_button "Пошук" button_type="submit" button_class="btn-success" %}
+  <form action="" method="get" class="form-control">
+    {% bootstrap_form form %}
+    {% bootstrap_button "🔎 Пошук" button_type="submit" button_class="btn-success" %}
   </form>
   <h1>Cell Title: {{ cell_title }}</h1>
 {% endblock %}
