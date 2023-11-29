@@ -6,3 +6,4 @@ class PrefixStreetChoices(models.TextChoices):
     BUL = "б.", "бульвар"
     PROSPECT = "пр.", "проспект"
     PROV = "пров.", "провулок"
+    UZV = "узв.", "узвіз"
