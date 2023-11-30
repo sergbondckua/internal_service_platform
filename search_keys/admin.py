@@ -111,6 +111,7 @@ class Building(BaseAdmin):
         "number",
     )
     save_on_top = True
+    save_as = True
     fieldsets = (
         (
             "Identifier building number",
