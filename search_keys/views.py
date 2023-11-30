@@ -29,8 +29,8 @@ class CellInfoView(generic.TemplateView):
 
         if prefix and street_name and building_number:
             cells = self.model.objects.filter(
-                models.Q(street__name__iexact=street_name)
-                | models.Q(street__old_name__iexact=street_name),
+                models.Q(street__name__contains=street_name)
+                | models.Q(street__old_name__contains=street_name),
                 models.Q(street__prefix=prefix)
                 | models.Q(street__old_prefix=prefix),
                 number=building_number,
@@ -45,7 +45,8 @@ class CellInfoView(generic.TemplateView):
 
     def get(self, request, *args, **kwargs):
         queryset = self.get_queryset()
-        form = CellSearchForm(request.GET)
+        form = CellSearchForm()
+
         if queryset is not None:
             return render(
                 request,

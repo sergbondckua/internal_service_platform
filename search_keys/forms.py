@@ -22,5 +22,5 @@ class CellSearchForm(forms.Form):
         max_length=10,
         required=True,
         label="",
-        widget=forms.TextInput(attrs={"placeholder": "№ будинку", "size": "6"})
+        widget=forms.TextInput(attrs={"placeholder": "№ будинку", "size": "10"})
     )

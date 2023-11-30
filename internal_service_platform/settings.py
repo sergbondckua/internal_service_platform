@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "crispy_forms",
     "crispy_bootstrap5",
-    "django_bootstrap5",
+    "bootstrap5",
     # custom
     "search_keys.apps.SearchKeysConfig",
 ]

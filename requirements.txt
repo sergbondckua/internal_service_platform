@@ -1,4 +1,4 @@
 crispy-bootstrap5==2023.10
 Django==4.2.7
 djangorestframework==3.14.0
-django_bootstrap5==23.3
+django-bootstrap-v5==1.0.11
