@@ -7,23 +7,23 @@
 {% endblock %}
 
 {% block content %}
-    {% bootstrap_form_errors form layout='inline' %}
-    <form role="form" class="row g-3" method="get">
-      <div class="col-auto">
-        {% bootstrap_field form.prefix size="large" layout="inline" %}
-      </div>
-      <div class="col-auto">
-        {% bootstrap_field form.street_name layout="inline" %}
-      </div>
-      <div class="col-auto">
-        {% bootstrap_field form.building_number layout="inline" %}
-      </div>
-      <div class="col-auto">
-        {% buttons layout="inline" %}
-          <button type="submit" class="btn btn-success btn-lg">Пошук</button>
-        {% endbuttons %}
-      </div>
-    </form>
+  {% bootstrap_form_errors form layout='inline' %}
+  <form role="form" class="row g-3" method="get">
+    <div class="col-auto">
+      {% bootstrap_field form.prefix size="large" layout="inline" %}
+    </div>
+    <div class="col-auto">
+      {% bootstrap_field form.street_name layout="inline" %}
+    </div>
+    <div class="col-auto">
+      {% bootstrap_field form.building_number layout="inline" %}
+    </div>
+    <div class="col-auto">
+      {% buttons layout="inline" %}
+        <button type="submit" class="btn btn-success btn-lg">Пошук</button>
+      {% endbuttons %}
+    </div>
+  </form>
   <div class="col">
     <h2>Search Results</h2>
   </div>
@@ -39,7 +39,14 @@
     {% endif %}
   </div>
 
-
+  <script>
+        $(function() {
+            $("#id_street_name").autocomplete({
+                source: "{% url 'search_keys:street_autocomplete' %}",
+                minLength: 2, // Minimum characters before triggering autocomplete
+            });
+        });
+    </script>
 
 
 {% endblock %}

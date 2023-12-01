@@ -1,9 +1,10 @@
 from django.db import models
+from django.http import JsonResponse
 from django.shortcuts import render
-from django.views import generic
+from django.views import generic, View
 
 from search_keys.forms import CellSearchForm
-from search_keys.models import Building
+from search_keys.models import Building, Street
 
 
 class BuildingsListView(generic.ListView):
@@ -54,3 +55,13 @@ class CellInfoView(generic.TemplateView):
                 {"cells": queryset, "form": self.get_context_data()["form"]},
             )
         return render(request, self.template_name, {"form": form})
+
+
+class StreetAutocompleteView(View):
+    """Autocomplete view for street"""
+
+    def get(self, request):
+        term = request.GET.get("term", "")
+        streets = Street.objects.filter(name__icontains=term)[:10]
+        result = [street.name for street in streets]
+        return JsonResponse(result, safe=False)
