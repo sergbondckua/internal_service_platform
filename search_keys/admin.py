@@ -4,6 +4,11 @@ from common.admin import BaseAdmin
 from search_keys.models import Box, Building, Cell, Street
 
 
+class BuildingInline(admin.TabularInline):
+    model = Building
+    extra = 1
+
+
 @admin.register(Box)
 class BoxAdmin(BaseAdmin):
     list_display = ("title",)
@@ -26,6 +31,7 @@ class BoxAdmin(BaseAdmin):
 
 @admin.register(Cell)
 class CellAdmin(BaseAdmin):
+    inlines = [BuildingInline]
     list_display = (
         "title",
         "box",
@@ -94,7 +100,7 @@ class StreetAdmin(BaseAdmin):
 
 
 @admin.register(Building)
-class Building(BaseAdmin):
+class BuildingAdmin(BaseAdmin):
     list_display = (
         "cell",
         "street",
