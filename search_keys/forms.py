@@ -10,7 +10,7 @@ class CellSearchForm(forms.Form):
         label="",
         choices=PrefixStreetChoices.choices,
         widget=forms.Select(),
-        initial=PrefixStreetChoices.ST
+        initial=PrefixStreetChoices.ST,
     )
     street_name = forms.CharField(
         max_length=50,
@@ -18,9 +18,16 @@ class CellSearchForm(forms.Form):
         label="",
         widget=forms.TextInput(attrs={"placeholder": "Назва вулиці"}),
     )
+    street_id = forms.IntegerField(
+        max_value=5,
+        label="",
+        widget=forms.HiddenInput(),
+    )
     building_number = forms.CharField(
         max_length=10,
         required=True,
         label="",
-        widget=forms.TextInput(attrs={"placeholder": "№ будинку", "size": "10"})
+        widget=forms.TextInput(
+            attrs={"placeholder": "№ будинку", "size": "10"}
+        ),
     )

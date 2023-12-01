@@ -16,6 +16,9 @@
       {% bootstrap_field form.street_name layout="inline" %}
     </div>
     <div class="col-auto">
+      {% bootstrap_field form.street_id layout="inline" %}
+    </div>
+    <div class="col-auto">
       {% bootstrap_field form.building_number layout="inline" %}
     </div>
     <div class="col-auto">
@@ -40,13 +43,34 @@
   </div>
 
   <script>
-        $(function() {
-            $("#id_street_name").autocomplete({
-                source: "{% url 'search_keys:street_autocomplete' %}",
-                minLength: 2, // Minimum characters before triggering autocomplete
-            });
-        });
-    </script>
+      $(function () {
+          $("#id_street_name").autocomplete({
+              source: function (request, response) {
+                  $.ajax({
+                      url: "{% url 'search_keys:street_autocomplete' %}",
+                      dataType: "json",
+                      data: {
+                          term: request.term
+                      },
+                      success: function (data) {
+                          response($.map(data, function (item) {
+                              return {
+                                  label: item.named,
+                                  value: item.named,
+                                  street_id: item.street_id
+                              };
+                          }));
+                      }
+                  });
+              },
+              minLength: 2, // Minimum characters before triggering autocomplete
+              select: function (event, ui) {
+                  // Set the selected street_id to #id_num_street
+                  $("#id_street_id").val(ui.item.street_id);
+              }
+          });
+      });
+  </script>
 
 
 {% endblock %}

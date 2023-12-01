@@ -62,6 +62,14 @@ class StreetAutocompleteView(View):
 
     def get(self, request):
         term = request.GET.get("term", "")
-        streets = Street.objects.filter(name__icontains=term)[:10]
-        result = [street.name for street in streets]
+        streets = Street.objects.filter(
+            models.Q(name__contains=term) | models.Q(old_name__contains=term)
+        )[:10]
+        result = [
+            {
+                "named": f"{street.name} {street.prefix} / {street.old_name} {street.old_prefix}",
+                "street_id": street.id,
+            }
+            for street in streets
+        ]
         return JsonResponse(result, safe=False)
