@@ -84,5 +84,5 @@ class Building(BaseModel):
 
     class Meta:
         ordering = ("number",)
-        verbose_name = "Building number"
-        verbose_name_plural = "Building numbers"
+        verbose_name = "Building address"
+        verbose_name_plural = "Building addresses"

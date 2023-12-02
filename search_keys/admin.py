@@ -77,7 +77,12 @@ class StreetAdmin(BaseAdmin):
 class BuildingAdmin(BaseAdmin):
     list_display = ("cell", "street", "number")
     list_filter = ("cell", "street")
-    search_fields = ("number",)
+    search_fields = (
+        "number",
+        "street__name",
+        "street__old_name",
+        "cell__title",
+    )
     save_on_top = True
     save_as = True
     fieldsets = (

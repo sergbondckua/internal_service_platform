@@ -1,46 +1,44 @@
-{% extends "base.html" %}
+{% extends "search_key/base.html" %}
 {% load bootstrap5 %}
-{% load crispy_forms_filters %}
 
 {% block title %}
-  cell title
+  Search key
 {% endblock %}
 
 {% block content %}
   {% bootstrap_form_errors form layout='inline' %}
-  <form role="form" class="row g-3" method="get">
-    {#    <div class="col-auto">#}
-    {#      {% bootstrap_field form.prefix size="large" layout="inline" %}#}
-    {#    </div>#}
-    <div class="col-auto">
-      {% bootstrap_field form.street_name layout="inline" %}
-    </div>
-    <div class="col-auto">
-      {% bootstrap_field form.street_id layout="inline" %}
-    </div>
-    <div class="col-auto">
-      {% bootstrap_field form.building_number layout="inline" %}
-    </div>
-    <div class="col-auto">
-      {% buttons layout="inline" %}
-        <button type="submit" class="btn btn-success btn-lg">Пошук</button>
-      {% endbuttons %}
+  <form method="get">
+    <fieldset>
+      <legend>
+        <div class="col">
+          <h3>Результати пошуку</h3>
+        </div>
+        <div class="col">
+          <ul>
+            {% for cell in cells %}
+              <li>{{ cell.cell }} 🔑<br><h2>{{ cell }}</h2></li>
+            {% empty %}
+              <li><h2>Відповідних результатів не знайдено.</h2></li>
+            {% endfor %}
+          </ul>
+        </div>
+      </legend>
+    </fieldset>
+    <div class="inner-form">
+      <div class="input-field first-wrap">
+        {{ form.street_name }}
+      </div>
+      <div class="col-auto">
+        {{ form.street_id }}
+      </div>
+      <div class="input-field second-wrap">
+        {{ form.building_number }}
+      </div>
+      <div class="input-field third-wrap">
+        <button type="submit" class="btn-search">Пошук</button>
+      </div>
     </div>
   </form>
-  <div class="col">
-    <h2>Search Results</h2>
-  </div>
-  <div class="col">
-    {% if cells %}
-      <ul>
-        {% for cell in cells %}
-          <li><h1>{{ cell.cell }}</h1><br> {{ cell }}</li>
-        {% endfor %}
-      </ul>
-    {% else %}
-      <p>No matching results found.</p>
-    {% endif %}
-  </div>
 
   <script>
       $(function () {
@@ -76,6 +74,5 @@
           document.getElementById("id_street_name").value = "";
       }
   </script>
-
 
 {% endblock %}

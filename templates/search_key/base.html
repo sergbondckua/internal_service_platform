@@ -1,0 +1,42 @@
+<!doctype html>
+{% load static %}
+{% load bootstrap5 %}
+
+{# Load CSS #}
+{% bootstrap_css %}
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/dark-hive/jquery-ui.css">
+<link href="https://fonts.googleapis.com/css?family=Comfortaa" rel="stylesheet"/>
+<link rel="stylesheet" href="{% static 'search_keys/css/main.css' %}">
+
+
+{# Load JavaScript #}
+{% bootstrap_javascript %}
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+<script src="{% static 'search_keys/js/main.js' %}"></script>
+
+
+{# Display django.contrib.messages as Bootstrap alerts #}
+{% bootstrap_messages %}
+
+<html lang="uk">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="author" content="sergbondckua@gmail.com">
+  <title>{% block title %}{% endblock %} - Internal Service Platform</title>
+</head>
+<body>
+{% block bootstrap5_content %}
+  {% autoescape off %}{% bootstrap_messages %}{% endautoescape %}
+
+  {# Content #}
+  <div class="s01">
+      {% block content %}{% endblock %}
+  </div>
+
+{% endblock %}
+
+</body>
+</html>

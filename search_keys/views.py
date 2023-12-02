@@ -59,7 +59,6 @@ class StreetAutocompleteView(View):
 
     def get(self, request):
         term = request.GET.get("term", "")
-        print(term)
         streets = self.model.objects.filter(
             Q(name__contains=term) | Q(old_name__contains=term)
         )[:10]
