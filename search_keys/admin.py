@@ -12,7 +12,6 @@ class BuildingInline(admin.TabularInline):
 @admin.register(Box)
 class BoxAdmin(BaseAdmin):
     list_display = ("title",)
-    list_filter = ("title",)
     search_fields = ("title",)
     save_on_top = True
 
@@ -32,18 +31,9 @@ class BoxAdmin(BaseAdmin):
 @admin.register(Cell)
 class CellAdmin(BaseAdmin):
     inlines = [BuildingInline]
-    list_display = (
-        "title",
-        "box",
-    )
-    list_filter = (
-        "title",
-        "box",
-    )
-    search_fields = (
-        "title",
-        "box",
-    )
+    list_display = ("title", "box")
+    list_filter = ("box",)
+    search_fields = ("title",)
     save_on_top = True
 
     fieldsets = (
@@ -62,26 +52,10 @@ class CellAdmin(BaseAdmin):
 
 @admin.register(Street)
 class StreetAdmin(BaseAdmin):
-    list_display = (
-        "prefix",
-        "name",
-        "old_prefix",
-        "old_name",
-    )
-    list_display_links = (
-        "name",
-        "old_name",
-    )
-    list_filter = (
-        "prefix",
-        "name",
-        "old_prefix",
-        "old_name",
-    )
-    search_fields = (
-        "name",
-        "old_name",
-    )
+    list_display = ("prefix", "name", "old_prefix", "old_name")
+    list_display_links = ("name", "old_name")
+    list_filter = ("prefix", "old_prefix")
+    search_fields = ("name", "old_name")
     save_on_top = True
     fieldsets = (
         (
@@ -101,21 +75,9 @@ class StreetAdmin(BaseAdmin):
 
 @admin.register(Building)
 class BuildingAdmin(BaseAdmin):
-    list_display = (
-        "cell",
-        "street",
-        "number",
-    )
-    list_filter = (
-        "cell",
-        "street",
-        "number",
-    )
-    search_fields = (
-        "cell",
-        "street",
-        "number",
-    )
+    list_display = ("cell", "street", "number")
+    list_filter = ("cell", "street")
+    search_fields = ("number",)
     save_on_top = True
     save_as = True
     fieldsets = (

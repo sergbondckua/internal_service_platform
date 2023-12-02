@@ -1,4 +1,4 @@
-from django.db import models
+from django.db.models import Q
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.views import generic, View
@@ -24,19 +24,14 @@ class CellInfoView(generic.TemplateView):
     context_object_name = "cells"
 
     def get_queryset(self):
-        prefix = self.request.GET.get("prefix")
-        street_name = self.request.GET.get("street_name")
+        street_id = self.request.GET.get("street_id")
         building_number = self.request.GET.get("building_number")
 
-        if prefix and street_name and building_number:
+        if street_id and building_number:
             cells = self.model.objects.filter(
-                models.Q(street__name__contains=street_name)
-                | models.Q(street__old_name__contains=street_name),
-                models.Q(street__prefix=prefix)
-                | models.Q(street__old_prefix=prefix),
-                number=building_number,
-            )
+                street=street_id, number=building_number)
             return cells
+
         return None
 
     def get_context_data(self, **kwargs):
@@ -60,16 +55,15 @@ class CellInfoView(generic.TemplateView):
 class StreetAutocompleteView(View):
     """Autocomplete view for street"""
 
+    model = Street
+
     def get(self, request):
         term = request.GET.get("term", "")
-        streets = Street.objects.filter(
-            models.Q(name__contains=term) | models.Q(old_name__contains=term)
+        print(term)
+        streets = self.model.objects.filter(
+            Q(name__contains=term) | Q(old_name__contains=term)
         )[:10]
         result = [
-            {
-                "named": f"{street.name} {street.prefix} / {street.old_name} {street.old_prefix}",
-                "street_id": street.id,
-            }
-            for street in streets
+            {"named": str(street), "street_id": street.id} for street in streets
         ]
         return JsonResponse(result, safe=False)

@@ -9,9 +9,9 @@
 {% block content %}
   {% bootstrap_form_errors form layout='inline' %}
   <form role="form" class="row g-3" method="get">
-    <div class="col-auto">
-      {% bootstrap_field form.prefix size="large" layout="inline" %}
-    </div>
+    {#    <div class="col-auto">#}
+    {#      {% bootstrap_field form.prefix size="large" layout="inline" %}#}
+    {#    </div>#}
     <div class="col-auto">
       {% bootstrap_field form.street_name layout="inline" %}
     </div>
@@ -70,6 +70,11 @@
               }
           });
       });
+
+      // Function to clear the contents of an input field with id "id_street_name"
+      function clearInput() {
+          document.getElementById("id_street_name").value = "";
+      }
   </script>
 
 
