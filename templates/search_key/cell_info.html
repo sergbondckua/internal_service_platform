@@ -7,21 +7,26 @@
 
 {% block content %}
   {% bootstrap_form_errors form layout='inline' %}
+
+  {#  Form #}
   <form method="get">
     <fieldset>
       <legend>
-        <div class="col">
-          <h3>Результати пошуку</h3>
-        </div>
-        <div class="col">
-          <ul>
-            {% for cell in cells %}
-              <li>{{ cell.cell }} 🔑<br><h2>{{ cell }}</h2></li>
-            {% empty %}
-              <li><h2>Відповідних результатів не знайдено.</h2></li>
-            {% endfor %}
-          </ul>
-        </div>
+        {% if cells %}
+          <div class="col">
+            <h3>Результати пошуку</h3>
+          </div>
+          <div class="col">
+            <ul>
+              {% for cell in cells %}
+                <li>{{ cell.cell }} 🔑<br>
+                  <h2>{{ cell }}</h2></li>
+              {% empty %}
+                <li><h2>Відповідних результатів не знайдено.</h2></li>
+              {% endfor %}
+            </ul>
+          </div>
+        {% endif %}
       </legend>
     </fieldset>
     <div class="inner-form">
@@ -39,40 +44,6 @@
       </div>
     </div>
   </form>
-
-  <script>
-      $(function () {
-          $("#id_street_name").autocomplete({
-              source: function (request, response) {
-                  $.ajax({
-                      url: "{% url 'search_keys:street_autocomplete' %}",
-                      dataType: "json",
-                      data: {
-                          term: request.term
-                      },
-                      success: function (data) {
-                          response($.map(data, function (item) {
-                              return {
-                                  label: item.named,
-                                  value: item.named,
-                                  street_id: item.street_id
-                              };
-                          }));
-                      }
-                  });
-              },
-              minLength: 2, // Minimum characters before triggering autocomplete
-              select: function (event, ui) {
-                  // Set the selected street_id to #id_num_street
-                  $("#id_street_id").val(ui.item.street_id);
-              }
-          });
-      });
-
-      // Function to clear the contents of an input field with id "id_street_name"
-      function clearInput() {
-          document.getElementById("id_street_name").value = "";
-      }
-  </script>
+  {#End form#}
 
 {% endblock %}

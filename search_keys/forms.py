@@ -21,11 +21,9 @@ class CellSearchForm(forms.Form):
         label="",
         widget=forms.HiddenInput(),
     )
-    building_number = forms.CharField(
-        max_length=10,
-        required=True,
+    building_number = forms.ChoiceField(
+        choices=[],
         label="",
-        widget=forms.TextInput(
-            attrs={"placeholder": "№ будинку", "size": "10"}
-        ),
+        required=True,
+        widget=forms.Select(attrs={}),
     )

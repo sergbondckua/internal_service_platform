@@ -8,7 +8,7 @@ class Box(BaseModel):
     title = models.CharField(verbose_name="Title", max_length=50)
 
     def __str__(self):
-        return self.title
+        return str(self.title)
 
     class Meta:
         ordering = ("title",)

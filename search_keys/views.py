@@ -29,14 +29,22 @@ class CellInfoView(generic.TemplateView):
 
         if street_id and building_number:
             cells = self.model.objects.filter(
-                street=street_id, number=building_number)
+                street=street_id, number=building_number
+            )
             return cells
 
         return None
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["form"] = CellSearchForm(self.request.GET or None)
+        street_id = self.request.GET.get("street_id", "")
+        building_choices = [
+            (building.number, str(building.number))
+            for building in self.model.objects.filter(street=street_id)
+        ]
+        form = CellSearchForm(self.request.GET or None)
+        form.fields["building_number"].choices = building_choices
+        context["form"] = form
         return context
 
     def get(self, request, *args, **kwargs):
@@ -60,9 +68,34 @@ class StreetAutocompleteView(View):
     def get(self, request):
         term = request.GET.get("term", "")
         streets = self.model.objects.filter(
-            Q(name__contains=term) | Q(old_name__contains=term)
+            Q(name__icontains=term) | Q(old_name__icontains=term)
         )[:10]
         result = [
-            {"named": str(street), "street_id": street.id} for street in streets
+            {"named": str(street), "street_id": street.id}
+            for street in streets
         ]
         return JsonResponse(result, safe=False)
+
+
+class BuildingAutocompleteView(View):
+    """Autocomplete view for building"""
+
+    model = Building
+
+    def get(self, request):
+        term = request.GET.get("term", "")
+        street_id = request.GET.get("street_id", "")
+
+        buildings = (
+            self.model.objects.filter(
+                Q(street=street_id) & Q(number__icontains=term)
+            )
+            .values("number")
+            .distinct()
+        )
+
+        building_list = [
+            {"building_number": building["number"]} for building in buildings
+        ]
+
+        return JsonResponse(building_list, safe=False)
