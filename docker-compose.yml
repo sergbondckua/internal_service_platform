@@ -1,10 +1,12 @@
-version: '3.7'
+version: "3.9"
 
 services:
   web:
     build: .
     container_name: internal_service_platform
-    command: bash -c "python manage.py runserver 0.0.0.0:8000"
+    command: bash -c "./manage.py collectstatic --noinput && 
+             ./manage.py migrate  && 
+              gunicorn -b 0.0.0.0:8000 internal_service_platform.wsgi:application"
     restart: always
     ports:
       - "8000:8000"
@@ -14,10 +16,13 @@ services:
       - .env
     volumes:
       - .:/usr/src/app
+      - static_volume:/usr/src/app/static
+      - media_volume:/usr/src/app/media
 
   db:
     image: postgres:latest
     container_name: postgres_container
+    restart: always
     env_file:
       - .env
     volumes:
@@ -33,5 +38,21 @@ services:
     depends_on:
       - db
 
+  nginx:
+    build:
+      dockerfile: ./Dockerfile
+      context: ./docker/nginx/
+    container_name: nginx_container
+    image: nginx_image
+    volumes:
+      - static_volume:/usr/src/app/static
+      - media_volume:/usr/src/app/media
+    depends_on:
+      - web
+    ports:
+      - "80:80"
+
 volumes:
   pg_data:
+  static_volume:
+  media_volume:

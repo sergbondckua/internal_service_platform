@@ -7,13 +7,6 @@ from search_keys.forms import CellSearchForm
 from search_keys.models import Building, Street
 
 
-class BuildingsListView(generic.ListView):
-    """TODO: Remove"""
-
-    model = Building
-    template_name = "search_key/building_list.html"
-
-
 class CellInfoView(generic.TemplateView):
     """
     View for displaying cell information based on street and building number.
