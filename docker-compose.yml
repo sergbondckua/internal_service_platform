@@ -4,9 +4,8 @@ services:
   web:
     build: .
     container_name: internal_service_platform
-    command: bash -c "python /usr/src/app/manage.py migrate --noinput &&
-              python /usr/src/app/manage.py runserver 0.0.0.0:8000"
-    #    restart: always
+    command: bash -c "python manage.py runserver 0.0.0.0:8000"
+    restart: always
     ports:
       - "8000:8000"
     depends_on:
@@ -18,16 +17,21 @@ services:
 
   db:
     image: postgres:latest
-    environment:
-      POSTGRES_DB: postgres
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres_password
+    container_name: postgres_container
+    env_file:
+      - .env
+    volumes:
+      - pg_data:/var/lib/postgresql/data/
+
+  pg_admin:
+    image: dpage/pgadmin4
+    container_name: pgadmin_container
     env_file:
       - .env
     ports:
-      - "5432:5432"
-    volumes:
-      - pg_data:/var/lib/postgresql/data/
+      - "5050:5050"
+    depends_on:
+      - db
 
 volumes:
   pg_data:

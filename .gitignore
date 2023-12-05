@@ -7,3 +7,8 @@ venv
 
 # Environment
 .env
+
+# Cashe
+*.pyc
+__pycache
+.DS_Store
