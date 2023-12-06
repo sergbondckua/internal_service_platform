@@ -3,8 +3,16 @@ from django.http import JsonResponse
 from django.shortcuts import render
 from django.views import generic, View
 
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
+from search_keys.serializers import (
+    BuildingListSerializer,
+    StreetListSerializer,
+    CellSerializer,
+)
 from search_keys.forms import CellSearchForm
-from search_keys.models import Building, Street
+from search_keys.models import Building, Street, Cell, Box
 
 
 class CellInfoView(generic.TemplateView):
@@ -92,3 +100,67 @@ class BuildingAutocompleteView(View):
         ]
 
         return JsonResponse(building_list, safe=False)
+
+
+class BoxListApiView(APIView):
+    """View for retrieving a list of boxes."""
+
+    def get(self, request):
+        boxes = Box.objects.all().order_by("title")
+        serializer = StreetListSerializer(boxes, many=True)
+        return Response(serializer.data)
+
+
+class CellListApiView(APIView):
+    """View for retrieving a list of cells."""
+
+    def get(self, request):
+        cells = Cell.objects.all().order_by("title")
+        serializer = StreetListSerializer(cells, many=True)
+        return Response(serializer.data)
+
+
+class StreetListApiView(APIView):
+    """View for retrieving a list of streets."""
+
+    def get(self, request):
+        streets = Street.objects.all().order_by("id")
+        serializer = StreetListSerializer(streets, many=True)
+        return Response(serializer.data)
+
+
+class BuildingListApiView(APIView):
+    """View for retrieving a list of addresses buildings."""
+
+    def get(self, request):
+        building = Building.objects.all().order_by("id")
+        serializer = BuildingListSerializer(building, many=True)
+        return Response(serializer.data)
+
+
+class CellApiView(APIView):
+    """Retrieving Cell objects based on street and building number."""
+
+    def get(self, request):
+        street_id = request.GET.get("street")
+        number = request.GET.get("number")
+
+        # Validate parameters
+        if not street_id or not number:
+            error_response = {
+                "error": "Both 'street' and 'number' parameters are required."
+            }
+            return Response(error_response, status=400)
+
+        try:
+            # Retrieve cells based on street and number
+            cells = Cell.objects.get(
+                building__street_id=street_id, building__number=number
+            )
+            serializer = CellSerializer(cells)
+            return Response(serializer.data)
+        except Cell.DoesNotExist:
+            error_response = {
+                "error": "No cells found for the specified parameters."
+            }
+            return Response(error_response, status=404)
