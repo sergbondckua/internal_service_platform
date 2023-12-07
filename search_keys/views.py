@@ -183,8 +183,7 @@ class StreetDetailApiView(APIView):
         try:
             # Retrieve cells based on street and number
             street = Street.objects.get(
-                Q(name__icontains=street_name)
-                | Q(old_name__icontains=street_name),
+                Q(name__iexact=street_name) | Q(old_name__iexact=street_name),
                 Q(prefix=prefix) | Q(old_prefix=prefix),
             )
             serializer = StreetListSerializer(street)
