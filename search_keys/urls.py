@@ -31,7 +31,7 @@ urlpatterns = [
     ),
     path(
         "api/v1/street/",
-        views.StreetListApiView.as_view(),
+        views.StreetDetailApiView.as_view(),
         name="api_street",
     ),
 ]

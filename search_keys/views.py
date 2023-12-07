@@ -116,7 +116,7 @@ class CellListApiView(APIView):
 
     def get(self, request):
         cells = Cell.objects.all().order_by("title")
-        serializer = StreetListSerializer(cells, many=True)
+        serializer = CellSerializer(cells, many=True)
         return Response(serializer.data)
 
 
