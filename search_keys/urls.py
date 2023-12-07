@@ -21,7 +21,7 @@ urlpatterns = [
     ),
     path(
         "api/v1/cell/",
-        views.CellApiView.as_view(),
+        views.CellDetailApiView.as_view(),
         name="api_cell",
     ),
     path(

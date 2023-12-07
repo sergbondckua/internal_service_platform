@@ -10,14 +10,14 @@ class BoxListSerializer(serializers.ModelSerializer):
         exclude = ("created_at", "updated_at")
 
 
-class CellSerializer(serializers.ModelSerializer):
+class CellListSerializer(serializers.ModelSerializer):
     """Serializer for Cell"""
 
     box = serializers.SlugRelatedField(slug_field="title", read_only=True)
 
     class Meta:
         model = Cell
-        exclude = ("created_at", "updated_at")
+        fields = ("title", "box")
 
 
 class StreetListSerializer(serializers.ModelSerializer):

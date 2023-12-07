@@ -9,7 +9,7 @@ from rest_framework.views import APIView
 from search_keys.serializers import (
     BuildingListSerializer,
     StreetListSerializer,
-    CellSerializer,
+    CellListSerializer,
 )
 from search_keys.forms import CellSearchForm
 from search_keys.models import Building, Street, Cell, Box
@@ -116,7 +116,7 @@ class CellListApiView(APIView):
 
     def get(self, request):
         cells = Cell.objects.all().order_by("title")
-        serializer = CellSerializer(cells, many=True)
+        serializer = CellListSerializer(cells, many=True)
         return Response(serializer.data)
 
 
@@ -138,7 +138,7 @@ class BuildingListApiView(APIView):
         return Response(serializer.data)
 
 
-class CellApiView(APIView):
+class CellDetailApiView(APIView):
     """Retrieving Cell objects based on street and building number."""
 
     def get(self, request):
@@ -157,7 +157,7 @@ class CellApiView(APIView):
             cell = Cell.objects.get(
                 building__street_id=street_id, building__number=number
             )
-            serializer = CellSerializer(cell)
+            serializer = CellListSerializer(cell)
             return Response(serializer.data)
         except Cell.DoesNotExist:
             error_response = {
