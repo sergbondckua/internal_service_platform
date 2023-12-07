@@ -154,13 +154,43 @@ class CellApiView(APIView):
 
         try:
             # Retrieve cells based on street and number
-            cells = Cell.objects.get(
+            cell = Cell.objects.get(
                 building__street_id=street_id, building__number=number
             )
-            serializer = CellSerializer(cells)
+            serializer = CellSerializer(cell)
             return Response(serializer.data)
         except Cell.DoesNotExist:
             error_response = {
                 "error": "No cells found for the specified parameters."
+            }
+            return Response(error_response, status=404)
+
+
+class StreetDetailApiView(APIView):
+    """Retrieves information about a specific street"""
+
+    def get(self, request):
+        street_name = request.GET.get("name")
+        prefix = request.GET.get("prefix")
+
+        # Validate parameters
+        if not street_name or not prefix:
+            error_response = {
+                "error": "Both 'name' and 'prefix' parameters are required."
+            }
+            return Response(error_response, status=400)
+
+        try:
+            # Retrieve cells based on street and number
+            street = Street.objects.get(
+                Q(name__icontains=street_name)
+                | Q(old_name__icontains=street_name),
+                Q(prefix=prefix) | Q(old_prefix=prefix),
+            )
+            serializer = StreetListSerializer(street)
+            return Response(serializer.data)
+        except Cell.DoesNotExist:
+            error_response = {
+                "error": "No street found for the specified parameters."
             }
             return Response(error_response, status=404)

@@ -19,7 +19,7 @@ urlpatterns = [
         views.BuildingListApiView.as_view(),
         name="api_buildings",
     ),
-path(
+    path(
         "api/v1/cell/",
         views.CellApiView.as_view(),
         name="api_cell",
@@ -28,6 +28,11 @@ path(
         "api/v1/streets/",
         views.StreetListApiView.as_view(),
         name="api_streets",
+    ),
+    path(
+        "api/v1/street/",
+        views.StreetListApiView.as_view(),
+        name="api_street",
     ),
 ]
 
