@@ -189,7 +189,7 @@ class StreetDetailApiView(APIView):
             )
             serializer = StreetListSerializer(street)
             return Response(serializer.data)
-        except Cell.DoesNotExist:
+        except Street.DoesNotExist:
             error_response = {
                 "error": "No street found for the specified parameters."
             }
