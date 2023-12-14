@@ -5,7 +5,6 @@ class CellSearchForm(forms.Form):
     """Form for searching for cell"""
 
     street_name = forms.CharField(
-        max_length=60,
         required=True,
         label="",
         widget=forms.TextInput(
@@ -17,7 +16,6 @@ class CellSearchForm(forms.Form):
         ),
     )
     street_id = forms.IntegerField(
-        max_value=5,
         label="",
         widget=forms.HiddenInput(),
     )

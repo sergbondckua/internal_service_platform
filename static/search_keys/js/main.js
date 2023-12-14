@@ -36,7 +36,7 @@ $(function () {
         buildingNumberSelect.empty();
 
         // Adding an empty element to the beginning of the list
-        buildingNumberSelect.append('<option value="" selected disabled>Виберіть номер будинку</option>');
+        buildingNumberSelect.append('<option value="" selected disabled>Номер</option>');
 
         // Fill select with house numbers
         $.ajax({
@@ -56,7 +56,6 @@ $(function () {
             }
         });
     }
-
 });
 
 // Function to clear the contents of the input field with id "id_street_name" and
@@ -66,3 +65,31 @@ function clearInput() {
     document.getElementById("id_building_number").value = "";
     document.getElementById("id_building_number").disabled = true;
 }
+
+// Modal dialog box search key
+$(function () {
+    $("#dialog-search-result").dialog({
+        modal: true,
+        autoOpen: true,
+        height: "auto",
+        width: "auto",
+        resizable: true,
+        show: {
+            effect: "fade",
+            duration: 1000
+        },
+        hide: {
+            effect: "fade",
+            duration: 500
+        },
+        buttons: [
+            {
+                text: "Дякую",
+                icon: "",
+                click: function () {
+                    $(this).dialog("close");
+                },
+            }
+        ],
+    });
+});

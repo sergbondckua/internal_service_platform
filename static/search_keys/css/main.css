@@ -461,10 +461,11 @@ legend {
     justify-content: center;
     -ms-flex-align: center;
     align-items: center;
-    font-family: 'Comfortaa', sans-serif;
+    /*font-family: 'Comfortaa', sans-serif;*/
+    font-family: Trebuchet MS,Tahoma,Verdana,Arial,sans-serif;
     color: #fff;
     background-size: cover;
-    background: url("../images/search_key.jpeg") center center;
+    background: url("../images/background.jpeg") center center;
     padding: 15px;
 }
 

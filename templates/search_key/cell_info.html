@@ -1,25 +1,35 @@
 {% extends "search_key/base.html" %}
-{% load bootstrap5 %}
 
 {% block title %}
   Search key
 {% endblock %}
 
 {% block content %}
-  {% bootstrap_form_errors form layout='inline' %}
-
   {#  Form #}
   <form method="get">
+
+    {# Show errors #}
+    {% if form.errors %}
+      <div class="ui-widget" style="margin-bottom: 20px;">
+        <div class="ui-state-error ui-corner-all" style="padding: 0 .7em;">
+          <p><span class="ui-icon ui-icon-alert" style="float: left; margin-right: .3em;"></span>
+            {{ form.errors }}
+          </p>
+        </div>
+      </div>
+    {% endif %}
+    {# End Show errors #}
+
     <fieldset>
       <legend>
-        Де ключі...?
+        Почни пошук...
       </legend>
     </fieldset>
     <div class="inner-form">
       <div class="input-field first-wrap">
         {{ form.street_name }}
       </div>
-      <div class="col-auto">
+      <div class="hidden">
         {{ form.street_id }}
       </div>
       <div class="input-field second-wrap">
@@ -30,47 +40,15 @@
       </div>
     </div>
   </form>
-  {#End form#}
+  {# End form #}
 
-  {#Result in Modal dialog#}
+  {# Result in Modal dialog #}
   {% for cell in cells %}
-    <div id="dialog-message" title="{{ cell }}">
-      <p class="text-center fs-1">{{ cell.cell }}<br>🔑</p>
-      <p class="text-center fs-5">{{ cell }}</p>
+    <div id="dialog-search-result" style="text-align: center;" title="🔍 Результат пошуку">
+      <h1>{{ cell.cell }}<br>🔑</h1>
+      {{ cell }}
     </div>
   {% endfor %}
-  {#End Modal dialog#}
-
-  <script>
-      $(function () {
-          $("#dialog-message").dialog({
-              modal: true,
-              autoOpen: true,
-              height: "auto",
-              resizable: true,
-              show: {
-                  effect: "fade",
-                  duration: 1000
-              },
-              hide: {
-                  effect: "fade",
-                  duration: 500
-              },
-              buttons: [
-                  {
-                      text: "Ok",
-                      icon: "ui-icon-plus",
-                      click: function () {
-                          $(this).dialog("close");
-                      },
-                  }
-              ],
-          });
-      });
-  </script>
-
-
-
-
-
+  {# End Modal dialog #}
+  
 {% endblock %}
