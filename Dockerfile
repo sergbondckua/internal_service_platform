@@ -29,4 +29,4 @@ COPY . .
 EXPOSE 8000
 
 # Command to run the application
-CMD ["gunicorn","-b","0.0.0.0:8001","internal_service_platform.wsgi:application"]
+#CMD ["gunicorn","-b","0.0.0.0:8001","internal_service_platform.wsgi:application"]

@@ -50,7 +50,7 @@ services:
     depends_on:
       - web
     ports:
-      - "80:80"
+      - "81:80"
 
 volumes:
   pg_data:
