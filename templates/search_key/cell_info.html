@@ -5,50 +5,55 @@
 {% endblock %}
 
 {% block content %}
-  {#  Form #}
-  <form method="get">
+  <div class="container">
 
-    {# Show errors #}
-    {% if form.errors %}
-      <div class="ui-widget" style="margin-bottom: 20px;">
-        <div class="ui-state-error ui-corner-all" style="padding: 0 .7em;">
-          <p><span class="ui-icon ui-icon-alert" style="float: left; margin-right: .3em;"></span>
-            {{ form.errors }}
-          </p>
+    {# Form #}
+    <form method="get">
+
+      {# Show errors #}
+      {% if form.errors %}
+        <div class="ui-widget" style="margin-bottom: 20px;">
+          <div class="ui-state-error ui-corner-all" style="padding: 0 .7em;">
+            <p><span class="ui-icon ui-icon-alert" style="float: left; margin-right: .3em;"></span>
+              {{ form.errors }}
+            </p>
+          </div>
+        </div>
+      {% endif %}
+      {# End Show errors #}
+
+      <fieldset>
+        <legend>
+          Почни пошук...
+        </legend>
+      </fieldset>
+      <div class="inner-form">
+        <div class="input-field first-wrap">
+          {{ form.street_name }}
+        </div>
+        <div class="hidden">
+          {{ form.street_id }}
+        </div>
+        <div class="input-field second-wrap">
+          {{ form.building_number }}
+        </div>
+        <div class="input-field third-wrap">
+          <button type="submit" class="btn-search">Пошук</button>
         </div>
       </div>
+    </form>
+    {# End form #}
+
+    {# Result in Modal dialog #}
+    {% if building_address %}
+      <div id="dialog-search-result" style="text-align: center;" title="🔍 Результат пошуку">
+        {% for address in building_address %}
+          <h1>{{ address.cell }}<br>🔑</h1>
+          {{ address }}
+        {% endfor %}
+      </div>
     {% endif %}
-    {# End Show errors #}
+    {# End Modal dialog #}
 
-    <fieldset>
-      <legend>
-        Почни пошук...
-      </legend>
-    </fieldset>
-    <div class="inner-form">
-      <div class="input-field first-wrap">
-        {{ form.street_name }}
-      </div>
-      <div class="hidden">
-        {{ form.street_id }}
-      </div>
-      <div class="input-field second-wrap">
-        {{ form.building_number }}
-      </div>
-      <div class="input-field third-wrap">
-        <button type="submit" class="btn-search">Пошук</button>
-      </div>
-    </div>
-  </form>
-  {# End form #}
-
-  {# Result in Modal dialog #}
-  {% for cell in cells %}
-    <div id="dialog-search-result" style="text-align: center;" title="🔍 Результат пошуку">
-      <h1>{{ cell.cell }}<br>🔑</h1>
-      {{ cell }}
-    </div>
-  {% endfor %}
-  {# End Modal dialog #}
-  
+  </div>
 {% endblock %}

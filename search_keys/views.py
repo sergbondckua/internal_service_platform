@@ -22,17 +22,17 @@ class CellInfoView(generic.TemplateView):
 
     model = Building
     template_name = "search_key/cell_info.html"
-    context_object_name = "cells"
+    context_object_name = "building_address"
 
     def get_queryset(self):
         street_id = self.request.GET.get("street_id")
         building_number = self.request.GET.get("building_number")
 
         if street_id and building_number:
-            cells = self.model.objects.filter(
+            queryset = self.model.objects.filter(
                 street=street_id, number=building_number
             )
-            return cells
+            return queryset
 
         return None
 
@@ -56,7 +56,10 @@ class CellInfoView(generic.TemplateView):
             return render(
                 request,
                 self.template_name,
-                {"cells": queryset, "form": self.get_context_data()["form"]},
+                {
+                    self.context_object_name: queryset,
+                    "form": self.get_context_data()["form"],
+                },
             )
         return render(request, self.template_name, {"form": form})
 

@@ -70,17 +70,16 @@ function clearInput() {
 $(function () {
     $("#dialog-search-result").dialog({
         modal: true,
-        autoOpen: true,
         height: "auto",
         width: "auto",
-        resizable: true,
+        resizable: false,
         show: {
             effect: "fade",
             duration: 1000
         },
         hide: {
             effect: "fade",
-            duration: 500
+            duration: 1000
         },
         buttons: [
             {

@@ -462,7 +462,7 @@ legend {
     -ms-flex-align: center;
     align-items: center;
     /*font-family: 'Comfortaa', sans-serif;*/
-    font-family: Trebuchet MS,Tahoma,Verdana,Arial,sans-serif;
+    font-family: Trebuchet MS, Tahoma, Verdana, Arial, sans-serif;
     color: #fff;
     background-size: cover;
     background: url("../images/background.jpeg") center center;
@@ -626,4 +626,8 @@ legend {
     .s01 form .inner-form .input-field.third-wrap .btn-search {
         font-size: 16px;
     }
+}
+
+#dialog-search-result {
+    display: none;
 }
