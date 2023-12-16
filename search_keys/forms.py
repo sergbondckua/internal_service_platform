@@ -10,7 +10,6 @@ class CellSearchForm(forms.Form):
         widget=forms.TextInput(
             attrs={
                 "placeholder": "Назва вулиці",
-                "size": "40",
                 "onfocus": "clearInput()",
             }
         ),

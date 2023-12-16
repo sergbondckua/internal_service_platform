@@ -506,7 +506,7 @@ legend {
     display: block;
     width: 100%;
     padding: 10px 32px;
-    font-size: 25px;
+    font-size: 20px;
 }
 
 .s01 form .inner-form select {
@@ -543,11 +543,12 @@ legend {
 .s01 form .inner-form .input-field.first-wrap {
     -ms-flex-positive: 1;
     flex-grow: 1;
+    width: 950px;
 }
 
 .s01 form .inner-form .input-field.second-wrap {
-    width: 32.77%;
-    min-width: 180px;
+    width: 15.77%;
+    min-width: 140px;
 }
 
 .s01 form .inner-form .input-field.third-wrap {
@@ -630,4 +631,15 @@ legend {
 
 #dialog-search-result {
     display: none;
+}
+
+.ui-widget {
+    font-family: Trebuchet MS, Gill Sans, Arial, sans-serif;
+    font-size: 1.2em;
+}
+
+.ui-autocomplete {
+    max-height: 400px;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
