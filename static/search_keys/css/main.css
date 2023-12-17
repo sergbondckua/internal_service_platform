@@ -465,7 +465,7 @@ legend {
     font-family: Trebuchet MS, Tahoma, Verdana, Arial, sans-serif;
     color: #fff;
     background-size: cover;
-    background: url("../images/background/bg_key_battle.jpg") center center;
+    background: url("../images/background/bg_key.jpeg") center center;
     padding: 15px;
 }
 
@@ -543,7 +543,7 @@ legend {
 .s01 form .inner-form .input-field.first-wrap {
     -ms-flex-positive: 1;
     flex-grow: 1;
-    width: 950px;
+    width: 830px;
 }
 
 .s01 form .inner-form .input-field.second-wrap {
