@@ -465,7 +465,7 @@ legend {
     font-family: Trebuchet MS, Tahoma, Verdana, Arial, sans-serif;
     color: #fff;
     background-size: cover;
-    background: url("../images/background.jpeg") center center;
+    background: url("../images/background/bg_key.jpeg") center center;
     padding: 15px;
 }
 
@@ -639,7 +639,17 @@ legend {
 }
 
 .ui-autocomplete {
-    max-height: 400px;
+    max-height: 200px;
     overflow-y: auto;
     overflow-x: hidden;
+}
+
+.ui-selectmenu-menu {
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.ui-menu-item {
+    height: 50px;
+    line-height: 35px;
 }
