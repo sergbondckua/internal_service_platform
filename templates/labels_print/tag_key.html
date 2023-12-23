@@ -1,0 +1,66 @@
+{% extends "labels_print/base.html" %}
+{% load bootstrap5 %}
+
+{% block title %}
+  Tag key creation
+{% endblock %}
+
+{% block content %}
+
+  <form method="post" class="your-form" id="your-form">
+    {% csrf_token %}
+    {{ formset.management_form }}
+    {% for form in formset %}
+      {% bootstrap_form form %}
+    {% endfor %}
+  {% buttons %}
+    <button type="button" class="btn btn-primary" id="add-field-btn" onclick="addDynamicField()">Add Field</button>
+    <button type="submit" class="btn btn-success" >Submit</button>
+  {% endbuttons %}
+  </form>
+
+
+  {% if data %}
+    <h2>Submitted Data:</h2>
+    <ul>
+      {% for form_data in data %}
+        <li>
+          <ul>
+            {% for key, value in form_data.items %}
+              <li><strong>{{ key }}:</strong> {{ value }}</li>
+            {% endfor %}
+          </ul>
+        </li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const addFieldButton = document.getElementById('add-field-btn');
+        addFieldButton.addEventListener('click', addDynamicField);
+    });
+
+    function addDynamicField() {
+        const formset = document.getElementById('id_form-TOTAL_FORMS');
+        formset.value = parseInt(formset.value) + 1;
+
+        const formsContainer = document.getElementById('your-form');
+        const existingForm = document.querySelector('.your-form');
+        const newForm = existingForm.cloneNode(true);
+
+        updateFormNames(newForm, formset.value - 1);
+
+        formsContainer.appendChild(newForm);
+    }
+
+    function updateFormNames(form, index) {
+        const inputs = form.querySelectorAll('[name^=form-]');
+        inputs.forEach(input => {
+            const newName = input.getAttribute('name').replace(/form-\d+/, `form-${index}`);
+            input.setAttribute('name', newName);
+        });
+    }
+</script>
+  
+{% endblock %}
