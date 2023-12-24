@@ -9,6 +9,8 @@ class TagKeyView:
 
 
 def tag_key_view(request):
+    template_name = "labels_print/tag_key.html"
+    heading_message = "Formset Demo"
     data = None
     if request.method == "POST":
         formset = TagKeyFormSet(request.POST)
@@ -17,5 +19,5 @@ def tag_key_view(request):
     else:
         formset = TagKeyFormSet()
 
-    context = {"formset": formset, "data": data}
-    return render(request, "labels_print/tag_key.html", context)
+    context = {"formset": formset, "data": data, "heading": heading_message}
+    return render(request, template_name, context)

@@ -7,18 +7,37 @@
 
 {% block content %}
 
-  <form method="post" class="your-form" id="your-form">
+  {% if heading %}
+    <h3>{{ heading }}</h3>
+  {% endif %}
+  <form class="form-horizontal" method="POST" action="">
     {% csrf_token %}
     {{ formset.management_form }}
     {% for form in formset %}
-      {% bootstrap_form form %}
+      <div class="row form-row">
+        <div class="col-2">
+{#          <label>{{ form.title.label }}</label>#}
+        </div>
+        <div class="col-4">
+          <div class="input-group mb-3">
+            <span class="input-group-text" id="basic-addon3">
+              <i class="bi bi-tablet-landscape" style=""></i>
+              <i class="bi bi-key" style=""></i>
+            </span>
+            {{ form.title }}
+            <button class="btn btn-success add-form-row" id="button-addon2">
+              <i class="bi bi-plus-square"></i>
+            </button>
+          </div>
+        </div>
+      </div>
     {% endfor %}
-  {% buttons %}
-    <button type="button" class="btn btn-primary" id="add-field-btn" onclick="addDynamicField()">Add Field</button>
-    <button type="submit" class="btn btn-success" >Submit</button>
-  {% endbuttons %}
+    <div class="submit-row">
+      <div class="col-4 offset-2">
+        <button type="submit" class="btn btn-block btn-primary">Create</button>
+      </div>
+    </div>
   </form>
-
 
   {% if data %}
     <h2>Submitted Data:</h2>
@@ -35,32 +54,4 @@
     </ul>
   {% endif %}
 
-  <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const addFieldButton = document.getElementById('add-field-btn');
-        addFieldButton.addEventListener('click', addDynamicField);
-    });
-
-    function addDynamicField() {
-        const formset = document.getElementById('id_form-TOTAL_FORMS');
-        formset.value = parseInt(formset.value) + 1;
-
-        const formsContainer = document.getElementById('your-form');
-        const existingForm = document.querySelector('.your-form');
-        const newForm = existingForm.cloneNode(true);
-
-        updateFormNames(newForm, formset.value - 1);
-
-        formsContainer.appendChild(newForm);
-    }
-
-    function updateFormNames(form, index) {
-        const inputs = form.querySelectorAll('[name^=form-]');
-        inputs.forEach(input => {
-            const newName = input.getAttribute('name').replace(/form-\d+/, `form-${index}`);
-            input.setAttribute('name', newName);
-        });
-    }
-</script>
-  
 {% endblock %}
