@@ -45,7 +45,7 @@ def tag_key_view(request):
 
 class PageNumCanvas(canvas.Canvas):
     def __init__(self, *args, **kwargs):
-        super(PageNumCanvas, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.pages = []
 
     def showPage(self):
@@ -59,8 +59,8 @@ class PageNumCanvas(canvas.Canvas):
         for page in self.pages:
             self.__dict__.update(page)
             self.draw_page_number(page_count)
-            super(PageNumCanvas, self).showPage()
-        super(PageNumCanvas, self).save()
+            super().showPage()
+        super().save()
 
     def draw_page_number(self, page_count):
         page = "Страница %d из %d" % (self._pageNumber, page_count)
