@@ -18,7 +18,9 @@ class Box(BaseModel):
 
 class Cell(BaseModel):
     title = models.CharField(max_length=15)
-    box = models.ForeignKey(Box, on_delete=models.CASCADE, related_name="cells")
+    box = models.ForeignKey(
+        Box, on_delete=models.CASCADE, related_name="cells"
+    )
 
     def __str__(self):
         return f"{self.title}({self.box})"
@@ -77,6 +79,7 @@ class Building(BaseModel):
         Cell,
         verbose_name="Cell",
         on_delete=models.CASCADE,
+        related_name="buildings",
     )
 
     def __str__(self):
