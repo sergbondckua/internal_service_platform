@@ -1,0 +1,131 @@
+{% extends "labels_print/base.html" %}
+{% load static %}
+{% load bootstrap5 %}
+
+
+{% block title %}
+  Tag cell creation
+{% endblock %}
+
+
+{% block content %}
+
+  <h2>Друк ярликів для комірок з ключами</h2>
+  <form role="form" class="row" method="post">
+    {% csrf_token %}
+    {% bootstrap_form_errors form type="non_fields" %}
+    <div class="input-group mb-3">
+      <div class="input-group-text"><i class="bi bi-list-columns-reverse"></i></div>
+      {{ form.tags }}
+      <button type="submit" class="btn btn-lg btn-success">Сформувати</button>
+    </div>
+  </form>
+
+  {#    <div class="print-area">#}
+  {#      <div class="row">#}
+  {#        <!--Show Tags-->#}
+  {#        {% for cell_name, street_names in cell_groups.items %}#}
+  {#          <div class="cell">#}
+  {##}
+  {#            <div class="card" style="width: 335px; height: 183px; font-size: 14px">#}
+  {#              <div class="card-header text-center">#}
+  {#                {{ cell_name }}#}
+  {#              </div>#}
+  {#              <div class="card-body">#}
+  {#                {% for street_name, numbers in street_names.items %}#}
+  {#                  <strong>{{ street_name }}:</strong>#}
+  {#                  {% for number in numbers %}#}
+  {#                    {{ number }}{% if not forloop.last %}, {% endif %}#}
+  {#                  {% endfor %}#}
+  {#                  {% if not forloop.last %}<br>{% endif %}#}
+  {#                {% endfor %}#}
+  {#              </div>#}
+  {#            </div>#}
+  {##}
+  {#          </div>#}
+  {#        {% endfor %}#}
+  {#        <!--End Show Tags-->#}
+  {#      </div>#}
+  {#    </div>#}
+
+  <table style="width: 100%;" class="">
+    <tr>
+      {% for cell_name, street_names in cell_groups.items %}
+        <td>
+          <div style="text-align: center;">{{ cell_name }}</div>
+          <hr>
+          {% for street_name, numbers in street_names.items %}
+            <strong>{{ street_name }}:</strong>
+
+            {% for number in numbers %}
+              {{ number }}{% if not forloop.last %}, {% endif %}
+            {% endfor %}
+
+            {% if not forloop.last %}<br>{% endif %}
+          {% endfor %}
+        </td>
+        {% if forloop.counter|divisibleby:3 and not forloop.last %}
+          </tr>
+          <tr>
+        {% endif %}
+      {% endfor %}
+      </tr>
+  </table>
+
+  <style>
+  
+      .print-area {
+          width: 29.7cm;
+          height: 21cm;
+          margin: 0 auto;
+          border: 0 solid #ccc;
+          padding: 1cm;
+          box-sizing: border-box;
+      }
+
+      /* Стили для печати */
+      @media print {
+
+          .print-area, .print-area * {
+              visibility: visible;
+          }
+
+          .print-area {
+              position: absolute;
+              left: 0;
+              top: 0;
+          }
+      }
+
+      .row {
+          display: flex;
+          justify-content: space-between;
+          margin-bottom: 0.5cm;
+      }
+
+      .cell {
+          width: 335px;
+          min-height: 3.5cm;
+          border: 0 solid #ccc;
+          padding: 0.5cm;
+          margin-bottom: 0.5cm;
+          box-sizing: border-box;
+      }
+
+      table {
+          border-collapse: collapse;
+          width: 14cm;
+      }
+
+      td {
+          max-width: 7cm;
+          height: 3.5cm;
+          text-align: left;
+          vertical-align: top;
+          border: 1px solid black;
+          padding: 3px;
+          {#box-sizing: border-box;#}
+      }
+  </style>
+
+{% endblock %}

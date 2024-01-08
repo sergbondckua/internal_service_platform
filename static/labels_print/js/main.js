@@ -60,3 +60,12 @@ $(document).on('click', '.remove-form-row', function (e) {
     deleteForm('form', $(this));
     return false;
 });
+
+// Select2 form
+$('#multiple-select-clear-field').select2({
+    theme: "bootstrap-5",
+    width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
+    placeholder: $(this).data('placeholder'),
+    closeOnSelect: false,
+    allowClear: true,
+});

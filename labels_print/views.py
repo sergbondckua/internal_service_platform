@@ -1,7 +1,9 @@
 import copy
 
+from django.db.models import QuerySet
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404
+from django.views import generic
 from reportlab.lib.units import cm
 
 from reportlab.pdfgen import canvas
@@ -21,7 +23,7 @@ from reportlab.platypus import (
 )
 
 from search_keys.models import Cell
-from labels_print.forms import TagKeyFormSet
+from labels_print.forms import TagKeyFormSet, TagCellForm
 
 
 class TagKeyView:
@@ -31,6 +33,8 @@ class TagKeyView:
 
 
 def tag_key_view(request):
+    template_name = "labels_print/tag_key.html"
+    heading_message = "Formset Demo"
     data = None
     if request.method == "POST":
         formset = TagKeyFormSet(request.POST)
@@ -89,25 +93,29 @@ def add_font_mappings():
 
 def conclusion_to_pdf(request, pk):
     cell_instance = get_object_or_404(Cell, id=pk)
-    buildings = cell_instance.buildings.all()
+    addresses = cell_instance.buildings.all()
 
-    street_buildings = {}
-    for building in buildings:
-        street_name = building.street.name
-        number = building.number
+    street_buildings_map = {}
+    for address in addresses:
+        street_name = (
+            address.street.name
+            if not address.street.old_name
+            else f"{address.street.name} ({address.street.old_name})"
+        )
+        number = address.number
 
-        if street_name not in street_buildings:
-            street_buildings[street_name] = [number]
+        if street_name not in street_buildings_map:
+            street_buildings_map[street_name] = [number]
         else:
-            street_buildings[street_name].append(number)
+            street_buildings_map[street_name].append(number)
 
-    result_data = {
-        street: ", ".join(map(str, numbers))
-        for street, numbers in street_buildings.items()
+    street_building_summary = {
+        street: ", ".join(numbers)
+        for street, numbers in street_buildings_map.items()
     }
 
-    result_string = "\n".join(
-        [f"{key}: {value}" for key, value in result_data.items()]
+    street_building_text = "\n".join(
+        [f"{key}:\n   • {value}" for key, value in street_building_summary.items()]
     )
     filename = cell_instance.title + "_results.pdf"
     response = HttpResponse(content_type="application/pdf")
@@ -143,13 +151,13 @@ def conclusion_to_pdf(request, pk):
     )
     table_style = [
         ("WORD_WRAP", (0, 0), (-1, -1)),
-        ("FONT", (0, 0), (-1, -1), "Roboto", 9.5),
+        ("FONT", (0, 0), (-1, -1), "Roboto", 10),
         ("ALIGN", (0, 0), (-1, 0), "CENTER"),
         ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
         ("GRID", (0, 0), (-1, -1), 0.25, colors.black),
         # ("SPAN", (0, 0), (-1, 0)),  # Merge cells in the first row
-        ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
-        ("BACKGROUND", (0, 0), (-1, 0), colors.grey),
+        ("TEXTCOLOR", (0, 0), (-1, 0), colors.black),
+        ("BACKGROUND", (0, 0), (-1, 0), colors.white),
         ("NO_SPLIT", (0, 0), (-1, -1)),
     ]
 
@@ -157,21 +165,21 @@ def conclusion_to_pdf(request, pk):
     doc_title.alignment = TA_CENTER
     doc_title.fontName = "Roboto-Bold"
     doc_title.fontSize = 20
-    title = "Друк комірок"
+    title = ""
     story.append(Paragraph(title, doc_title))
 
-    personal_data = [
-        ["%s (%s)" % (cell_instance.title, cell_instance.box), "", ""],
-        [result_string, "", ""],
+    label_data = [
+        [f"{cell_instance.title} ({cell_instance.box})", "", ""],
+        [street_building_text, "", ""],
     ]
 
     # Specify column widths and row heights
-    column_widths = [8.176 * cm, 8.176 * cm]  # Adjust as needed
-    row_heights = [0.6 * cm, 3.5 * cm]  # Adjust as needed
+    column_widths = [8.5 * cm, 8.5 * cm]  # Adjust as needed
+    row_heights = [0.6 * cm, 4.5 * cm]  # Adjust as needed
 
     # Create the table with specified column widths and row heights
     table = Table(
-        personal_data, colWidths=column_widths, rowHeights=row_heights
+        label_data, colWidths=column_widths, rowHeights=row_heights
     )
 
     table.setStyle(TableStyle(table_style))
@@ -181,3 +189,37 @@ def conclusion_to_pdf(request, pk):
 
     doc.build(story, canvasmaker=PageNumCanvas)
     return response
+
+
+class TagCellFormView(generic.FormView, generic.TemplateView):
+    template_name = "labels_print/tag_cell_print.html"
+    form_class = TagCellForm
+
+    def form_valid(self, form):
+        selected_cells = form.cleaned_data["tags"]
+        cell_groups = self.group_cells_by_street(selected_cells)
+        return self.render_to_response(
+            self.get_context_data(form=form, cell_groups=cell_groups)
+        )
+
+    @staticmethod
+    def group_cells_by_street(selected_cells: QuerySet) -> dict:
+        cell_groups = {}
+
+        for cell in selected_cells:
+            cell_name = f"{cell.title}({cell.box})"
+            if cell_name not in cell_groups:
+                cell_groups[cell_name] = {}
+
+            for street in cell.buildings.all():
+                street_old = (
+                    f"({street.street.old_name})"
+                    if street.street.old_name
+                    else ""
+                )
+                street_name = f"{street.street.name}{street_old}"
+                if street_name not in cell_groups[cell_name]:
+                    cell_groups[cell_name][street_name] = []
+                cell_groups[cell_name][street_name].append(street.number)
+
+        return cell_groups

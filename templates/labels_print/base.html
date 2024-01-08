@@ -16,12 +16,11 @@
   <link href="https://fonts.googleapis.com/css?family=Comfortaa" rel="stylesheet"/>
   {% bootstrap_css %}
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
-
-  {# Load JavaScript #}
-  <script src="{% static 'jquery-ui-1.13.2/external/jquery/jquery.js' %}"></script>
-  {% bootstrap_javascript %}
-  <script src="{% static 'labels_print/js/main.js' %}"></script>
-
+  <!--Select2 bootstrap-->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css"/>
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css"/>
+  <link rel="stylesheet" href="{% static 'labels_print/css/main.css' %}">
 
 </head>
 <body>
@@ -29,7 +28,18 @@
 {# Content #}
 {# Display django.contrib.messages as Bootstrap alerts #}
 {% bootstrap_messages %}
-{% block content %}{% endblock %}
+<div class="container">
+  {% block content %}{% endblock %}
+</div>
+
 
 </body>
+
+{# Load JavaScript #}
+<script src="{% static 'jquery-ui-1.13.2/external/jquery/jquery.js' %}"></script>
+{% bootstrap_javascript %}
+<!--Select2 bootstrap-->
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+<script src="{% static 'labels_print/js/main.js' %}"></script>
 </html>
