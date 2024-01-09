@@ -67,7 +67,7 @@ class PageNumCanvas(canvas.Canvas):
         super().save()
 
     def draw_page_number(self, page_count):
-        page = "Страница %d из %d" % (self._pageNumber, page_count)
+        page = f"Powered by: Serhii Bondarenko. Сторінка {self._pageNumber} із {page_count}"
         self.setFont("Roboto", 9)
         self.drawRightString(A4[0] - 10, 10, page)
 
@@ -107,8 +107,8 @@ def conclusion_to_pdf(request, pk):
         pagesize=landscape(A4),
         rightMargin=10,
         leftMargin=10,
-        topMargin=10,
-        bottomMargin=10,
+        topMargin=50,
+        bottomMargin=80,
         title="Результаты",
     )
 
@@ -140,8 +140,10 @@ def conclusion_to_pdf(request, pk):
 
     table_style = [
         # ("WORD_WRAP", (0, 0), (-1, -1)),
-        # ("FONT", (0, 0), (-1, -1), "Roboto", 12),
+        ("FONT", (0, 0), (-1, -1), "Roboto", 12),
         ("ALIGN", (0, 0), (-1, 0), "CENTER"),
+        ("ALIGN", (0, 2), (-1, 2), "CENTER"),
+        ("ALIGN", (0, 4), (-1, 4), "CENTER"),
         ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
         ("GRID", (0, 0), (-1, -1), 0.25, colors.black),
         # ("SPAN", (0, 0), (-1, 0)),  # Merge cells in the first row
@@ -184,22 +186,43 @@ def conclusion_to_pdf(request, pk):
     )
 
     label_data = [
-        [f"{cell_instance.title} ({cell_instance.box})", "", ""],
         [
-            Paragraph(
-                street_building_text.replace("\n", "<br />\n"), styles["Label"]
-            ),
-            "",
-            "",
+            "Column 1",
+            "Column 2",
+            "Column 3",
+            "Column 4",
+            "Column 5",
+            "Column 6",
+            "Column 3",
+            "Column 4",
+            "Column 5",
+            "Column 6",
+        ],
+        [
+            "Data 1",
+            "Data 2",
+            "Data 3",
+            "Data 4",
+            "Data 5",
+            "Data 6",
+            "Data 3",
+            "Data 4",
+            "Data 5",
+            "Data 6",
         ],
     ]
+    new_data = []
+
+    for i in range(0, len(label_data[0]), 3):
+        new_data.append(label_data[0][i : i + 3])
+        new_data.append(label_data[1][i : i + 3])
 
     # Specify column widths and row heights
-    column_widths = [8.5 * cm, 8.5 * cm]  # Adjust as needed
-    row_heights = [0.6 * cm, 4.5 * cm]  # Adjust as needed
+    column_widths = [8.5 * cm, 8.5 * cm, 8.5 * cm]
+    row_heights = [0.6 * cm, 4.5 * cm] * (len(new_data) // 2)
 
     # Create the table with specified column widths and row heights
-    table = Table(label_data, colWidths=column_widths, rowHeights=row_heights)
+    table = Table(new_data, colWidths=column_widths, rowHeights=row_heights)
 
     table.setStyle(TableStyle(table_style))
     story.append(table)
@@ -237,9 +260,9 @@ class TagCellFormView(generic.FormView, generic.TemplateView):
             pagesize=landscape(A4),
             rightMargin=10,
             leftMargin=10,
-            topMargin=10,
-            bottomMargin=10,
-            title="Результаты",
+            topMargin=60,
+            bottomMargin=80,
+            title="Друк наліпок для комірок",
         )
 
         story = []
@@ -247,17 +270,10 @@ class TagCellFormView(generic.FormView, generic.TemplateView):
         styles = getSampleStyleSheet()
         styles.add(
             ParagraphStyle(
-                name="Justify",
-                alignment=TA_JUSTIFY,
+                name="Center",
+                alignment=TA_CENTER,
                 fontName="Roboto",
-                fontSize=11,
-            )
-        )
-        styles.add(
-            ParagraphStyle(
-                name="Justify-Bold",
-                alignment=TA_JUSTIFY,
-                fontName="Roboto-Bold",
+                wordWrap=True,
             )
         )
         styles.add(
@@ -272,16 +288,18 @@ class TagCellFormView(generic.FormView, generic.TemplateView):
         )
 
         table_style = [
-            ("ALIGN", (0, 0), (-1, 0), "CENTER"),
             ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
-            ("GRID", (0, 0), (-1, -1), 0.25, colors.black),
-            ("TEXTCOLOR", (0, 0), (-1, 0), colors.black),
-            ("BACKGROUND", (0, 0), (-1, 0), colors.white),
+            ("GRID", (0, 0), (-1, -1), 1, colors.black),
+            ("TEXTCOLOR", (0, 0), (-1, -1), colors.black),
+            # ("BOX", (0, 0), (-1, -1), 2, colors.black),
         ]
 
         cell_groups = self.group_cells_by_street(selected_cells)
         label_data = []
-        cell_group_headers = list(cell_groups.keys())
+        cell_group_headers = [
+            Paragraph(cell_name, styles["Center"])
+            for cell_name in list(cell_groups.keys())
+        ]
         label_data.append(cell_group_headers)
 
         street_building_paragraphs = []
@@ -303,23 +321,29 @@ class TagCellFormView(generic.FormView, generic.TemplateView):
         # Create table for label information
         label_data.append(street_building_paragraphs)
 
-        doc_title = copy.copy(styles["Heading1"])
-        doc_title.alignment = TA_CENTER
-        doc_title.fontName = "Roboto-Bold"
-        doc_title.fontSize = 20
-        title = ""
-        story.append(Paragraph(title, doc_title))
+        new_data = []
+
+        for i in range(0, len(label_data[0]), 3):
+            new_data.append(label_data[0][i : i + 3])
+            new_data.append(label_data[1][i : i + 3])
 
         # Specify column widths and row heights
-        column_widths = [8.5 * cm, 8.5 * cm]  # Adjust as needed
-        row_heights = [0.6 * cm, 4.5 * cm]  # Adjust as needed
+        column_widths = [8.5 * cm, 8.5 * cm, 8.5 * cm]
+        row_heights = [0.6 * cm, 4.5 * cm] * (len(new_data) // 2)
 
         # Create the table with specified column widths and row heights
         table = Table(
-            label_data, colWidths=column_widths, rowHeights=row_heights
+            new_data, colWidths=column_widths, rowHeights=row_heights
         )
 
         table.setStyle(TableStyle(table_style))
+
+        doc_title = copy.copy(styles["Heading1"])
+        doc_title.alignment = TA_CENTER
+        doc_title.fontName = "Roboto-Bold"
+        doc_title.fontSize = 10
+        title = ""
+        story.append(Paragraph(title, doc_title))
         story.append(table)
         story.append(Spacer(1, 10))
         doc_title.fontSize = 12
