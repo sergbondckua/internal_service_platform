@@ -265,7 +265,8 @@ class TagCellFormView(generic.FormView, generic.TemplateView):
                 name="Label",
                 alignment=TA_LEFT,
                 fontName="Roboto",
-                fontSize=13,
+                fontSize=12,
+                leading=15,
                 wordWrap=True,
             )
         )
@@ -279,17 +280,47 @@ class TagCellFormView(generic.FormView, generic.TemplateView):
         ]
 
         cell_groups = self.group_cells_by_street(selected_cells)
+        label_data = []
+        cell_group_headers = list(cell_groups.keys())
+        label_data.append(cell_group_headers)
+
+        street_building_paragraphs = []
+        street_building_summary = ""
+        for _, cell_group in cell_groups.items():
+            street_buildings_info = []
+            for street, building_numbers in cell_group.items():
+                street_buildings_info.append(
+                    f"<b>{street}:</b>\n• {', '.join(building_numbers)}\n"
+                )
+                street_building_summary = " ".join(street_buildings_info)
+            street_building_paragraphs.append(
+                Paragraph(
+                    street_building_summary.replace("\n", "<br />\n"),
+                    styles["Label"],
+                )
+            )
+
+        # Create table for label information
+        label_data.append(street_building_paragraphs)
+
         doc_title = copy.copy(styles["Heading1"])
         doc_title.alignment = TA_CENTER
         doc_title.fontName = "Roboto-Bold"
         doc_title.fontSize = 20
-        title = str(cell_groups)
+        title = ""
         story.append(Paragraph(title, doc_title))
 
         # Specify column widths and row heights
         column_widths = [8.5 * cm, 8.5 * cm]  # Adjust as needed
         row_heights = [0.6 * cm, 4.5 * cm]  # Adjust as needed
 
+        # Create the table with specified column widths and row heights
+        table = Table(
+            label_data, colWidths=column_widths, rowHeights=row_heights
+        )
+
+        table.setStyle(TableStyle(table_style))
+        story.append(table)
         story.append(Spacer(1, 10))
         doc_title.fontSize = 12
 
