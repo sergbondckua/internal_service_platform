@@ -261,7 +261,7 @@ class TagCellFormView(generic.FormView, generic.TemplateView):
             rightMargin=10,
             leftMargin=10,
             topMargin=60,
-            bottomMargin=80,
+            bottomMargin=107,
             title="Друк наліпок для комірок",
         )
 
@@ -281,7 +281,7 @@ class TagCellFormView(generic.FormView, generic.TemplateView):
                 name="Label",
                 alignment=TA_LEFT,
                 fontName="Roboto",
-                fontSize=12,
+                fontSize=11.5,
                 leading=15,
                 wordWrap=True,
             )
@@ -291,7 +291,6 @@ class TagCellFormView(generic.FormView, generic.TemplateView):
             ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
             ("GRID", (0, 0), (-1, -1), 1, colors.black),
             ("TEXTCOLOR", (0, 0), (-1, -1), colors.black),
-            # ("BOX", (0, 0), (-1, -1), 2, colors.black),
         ]
 
         cell_groups = self.group_cells_by_street(selected_cells)
@@ -308,7 +307,7 @@ class TagCellFormView(generic.FormView, generic.TemplateView):
             street_buildings_info = []
             for street, building_numbers in cell_group.items():
                 street_buildings_info.append(
-                    f"<b>{street}:</b>\n• {', '.join(building_numbers)}\n"
+                    f"<b>{street}:</b> • {', '.join(building_numbers)}\n"
                 )
                 street_building_summary = " ".join(street_buildings_info)
             street_building_paragraphs.append(
