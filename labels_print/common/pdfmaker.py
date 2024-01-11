@@ -24,7 +24,7 @@ from reportlab.platypus import (
 class PDFGenerator:
     """Class for generating PDF documents."""
 
-    FONT_PATH = os.path.join(settings.STATIC_DIR, "fonts")
+    FONT_PATH = os.path.join(settings.STATIC_ROOT, "fonts")
     TABLE_STYLES = [
         ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
         ("GRID", (0, 0), (-1, -1), 1, colors.black),
