@@ -3,8 +3,8 @@ import os
 from django.conf import settings
 from django.db.models import QuerySet
 from django.http import HttpResponse
-from reportlab.lib import colors
 
+from reportlab.lib import colors
 from reportlab.lib.enums import TA_CENTER, TA_LEFT
 from reportlab.lib.fonts import addMapping
 from reportlab.lib.pagesizes import A4, landscape
