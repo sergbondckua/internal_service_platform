@@ -1,5 +1,6 @@
 import os
 
+from django.conf import settings
 from django.db.models import QuerySet
 from django.http import HttpResponse
 
@@ -23,7 +24,7 @@ from reportlab.platypus import (
 class PDFGenerator:
     """Class for generating PDF documents."""
 
-    FONT_PATH = os.path.join("static", "fonts")
+    FONT_PATH = os.path.join(settings.STATIC_DIR, "fonts")
     TABLE_STYLES = [
         ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
         ("GRID", (0, 0), (-1, -1), 1, colors.black),

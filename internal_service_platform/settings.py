@@ -50,7 +50,7 @@ INSTALLED_APPS = [
     "bootstrap5",
     # custom
     "search_keys.apps.SearchKeysConfig",
-    "labels_print.apps.LabelsPrintConfig"
+    "labels_print.apps.LabelsPrintConfig",
 ]
 
 MIDDLEWARE = [
@@ -134,9 +134,12 @@ USE_TZ = True
 
 
 STATIC_URL = "/static/"
-STATIC_ROOT = os.path.join(BASE_DIR, "static").replace("\\", "/")
-# STATIC_DIR = os.path.join(BASE_DIR, "static").replace("\\", "/")
-# STATICFILES_DIRS = [STATIC_DIR]
+STATIC_DIR = os.path.join(BASE_DIR, "static").replace("\\", "/")
+
+if DEBUG:
+    STATICFILES_DIRS = (STATIC_DIR,)
+else:
+    STATIC_ROOT = STATIC_DIR
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media").replace("\\", "/")
