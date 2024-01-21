@@ -1,4 +1,4 @@
-version: "3.9"
+version: "3.3"
 
 services:
   web:
@@ -31,6 +31,7 @@ services:
   pg_admin:
     image: dpage/pgadmin4
     container_name: pgadmin_container
+    restart: always
     env_file:
       - .env
     ports:
@@ -43,6 +44,7 @@ services:
       dockerfile: ./Dockerfile
       context: ./docker/nginx/
     container_name: nginx_container
+    restart: always
     image: nginx_image
     volumes:
       - static_volume:/usr/src/app/static
