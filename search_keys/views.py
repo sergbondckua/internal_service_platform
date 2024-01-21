@@ -158,7 +158,7 @@ class CellDetailApiView(APIView):
         try:
             # Retrieve cells based on street and number
             cell = Cell.objects.get(
-                building__street_id=street_id, building__number=number
+                buildings__street_id=street_id, buildings__number=number
             )
             serializer = CellListSerializer(cell)
             return Response(serializer.data)
