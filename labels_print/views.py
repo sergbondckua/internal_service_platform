@@ -28,13 +28,6 @@ class TagCellFormView(generic.FormView, generic.TemplateView):
     template_name = "labels_print/tag_cell_print.html"
     form_class = TagCellForm
 
-    # def form_valid(self, form):
-    #     selected_cells = form.cleaned_data["tags"]
-    #     cell_groups = self.group_cells_by_street(selected_cells)
-    #     return self.render_to_response(
-    #         self.get_context_data(form=form, cell_groups=cell_groups)
-    #     )
-
     def form_valid(self, form):
         selected_cells = form.cleaned_data["tags"]
         response = HttpResponse(content_type="application/pdf")
