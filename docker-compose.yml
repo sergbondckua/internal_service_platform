@@ -6,10 +6,10 @@ services:
     container_name: internal_service_platform
     command: bash -c "./manage.py collectstatic --noinput && 
              ./manage.py migrate  && 
-              gunicorn -b 0.0.0.0:8000 internal_service_platform.wsgi:application"
+              gunicorn -b 0.0.0.0:8001 internal_service_platform.wsgi:application"
     restart: always
     ports:
-      - "8000:8000"
+      - "8001:8001"
     depends_on:
       - db
     env_file:
@@ -49,10 +49,23 @@ services:
     volumes:
       - static_volume:/usr/src/app/static
       - media_volume:/usr/src/app/media
+      - ./docker/nginx/letsencrypt:/etc/letsencrypt
+      - ./docker/nginx/www:/var/www/certbot
+
     depends_on:
       - web
     ports:
       - "81:80"
+
+  certbot:
+    image: certbot/certbot
+    container_name: certbot_container
+    restart: always
+    entrypoint: /bin/sh -c 'trap exit TERM; while :; do certbot certonly --webroot -w /var/www/certbot -d fregi.pp.ua --agree-tos --email admin@fregi.pp.ua --non-interactive --renew-by-default; sleep 12h & wait $${!}; done;'
+    volumes:
+      - ./docker/nginx/letsencrypt:/etc/letsencrypt
+      - ./docker/nginx/log:/var/log/letsencrypt
+      - ./docker/nginx/www:/var/www/certbot
 
 volumes:
   pg_data:
