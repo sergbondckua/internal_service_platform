@@ -1,0 +1,11 @@
+<!-- templates/fill_in_docx/contract_success.html -->
+<h2>Договори успішно згенеровані!</h2>
+
+<p>Скачайте документи за посиланнями нижче:</p>
+<ul>
+    <li><a href="{{ filled_contract_url }}" download>Скачати договір</a></li>
+    <li><a href="{{ filled_pax_akt_url }}" download>Скачати акт</a></li>
+    {% if filled_add_agreement_url %}
+        <li><a href="{{ filled_add_agreement_url }}" download>Скачати додаткову угоду</a></li>
+    {% endif %}
+</ul>

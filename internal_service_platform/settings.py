@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     # custom
     "search_keys.apps.SearchKeysConfig",
     "labels_print.apps.LabelsPrintConfig",
+    "fill_in_docx.apps.FillInDocxConfig",
 ]
 
 MIDDLEWARE = [
@@ -122,7 +123,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = "uk"
 
-TIME_ZONE = "Europe/Kiev"
+TIME_ZONE = "Europe/Kyiv"
 
 USE_I18N = True
 

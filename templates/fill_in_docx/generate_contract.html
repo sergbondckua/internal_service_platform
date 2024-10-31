@@ -1,0 +1,12 @@
+{% extends "search_key/base.html" %}
+
+{% block content %}
+    <title>{% block title %}Fill in docx{% endblock %}</title>
+
+    <h1>Введіть дані для створення договору</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Створити договір</button>
+    </form>
+{% endblock %}
