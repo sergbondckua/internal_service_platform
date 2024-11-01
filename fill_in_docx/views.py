@@ -8,6 +8,7 @@ from fill_in_docx.forms import PartyDataForm
 from fill_in_docx.managers.filler import TemplateFiller
 from fill_in_docx.managers.party_data import PartyData
 from fill_in_docx.managers.generator import DataGenerator
+from fill_in_docx.services.utils import clear_directory
 
 
 class ContractGenerateView(FormView):
@@ -16,7 +17,8 @@ class ContractGenerateView(FormView):
     success_url = reverse_lazy("fill_in_docx:contract_success")
 
     def form_valid(self, form: PartyDataForm):
-        # Create PartyData object from form data
+        # Створення об'єкта PartyData з даних форми
+
         party_data = PartyData(
             contract_number=form.cleaned_data["contract_number"],
             date_contract=form.cleaned_data["date_contract"],
@@ -34,25 +36,32 @@ class ContractGenerateView(FormView):
             bank_details=form.cleaned_data["bank_details"],
         )
 
-        # Generate contract data
+        # Генерація даних для договору
         data_generator = DataGenerator(party_data)
         contract_data = data_generator.generate()
 
-        # Fill templates
-        base_dir = "fill_in_docx/source/"
+        # Шляхи до шаблонів
+        source_dir = os.path.join(settings.BASE_DIR, "fill_in_docx/source/")
+        filled_dir = os.path.join(settings.MEDIA_ROOT, "filled_docx")
+
+        # Очищення директорії перед збереженням нових файлів
+        clear_directory(filled_dir)
+
+        # Заповнення шаблонів і завантаження результату
         TemplateFiller(
-            os.path.join(base_dir, "contract_template.docx"),
-            "media/filled_contract.docx",
+            os.path.join(source_dir, "contract_template.docx"),
+            os.path.join(filled_dir, "dogovir.docx"),
         ).fill_template(contract_data)
         TemplateFiller(
-            os.path.join(base_dir, "pax_akt_template.docx"),
-            "media/filled_pax_akt.docx",
+            os.path.join(source_dir, "pax_akt_template.docx"),
+            os.path.join(filled_dir, "pax_akt.docx"),
         ).fill_template(contract_data)
 
+        # Додаткова угода (якщо є попередній номер договору)
         if contract_data["old_contract_number"]:
             TemplateFiller(
-                os.path.join(base_dir, "add_agreement_template.docx"),
-                "media/filled_add_agreement.docx",
+                os.path.join(source_dir, "add_agreement_template.docx"),
+                os.path.join(filled_dir, "dod_ugoda.docx"),
             ).fill_template(contract_data)
 
         return super().form_valid(form)
@@ -65,12 +74,19 @@ class ContractSuccessView(TemplateView):
         context = super().get_context_data(**kwargs)
         # Посилання на файли для завантаження
         context["filled_contract_url"] = os.path.join(
-            settings.MEDIA_URL, "filled_contract.docx"
+            settings.MEDIA_URL, "filled_docx/dogovir.docx"
         )
         context["filled_pax_akt_url"] = os.path.join(
-            settings.MEDIA_URL, "filled_pax_akt.docx"
+            settings.MEDIA_URL, "filled_docx/pax_akt.docx"
         )
-        context["filled_add_agreement_url"] = os.path.join(
-            settings.MEDIA_URL, "filled_add_agreement.docx"
+
+        # Додаємо додаткову угоду до контексту, якщо вона існує
+        add_agreement_path = os.path.join(
+            settings.MEDIA_ROOT, "filled_docx/dod_ugoda.docx"
         )
+        if os.path.exists(add_agreement_path):
+            context["filled_add_agreement_url"] = os.path.join(
+                settings.MEDIA_URL, "filled_docx/dod_ugoda.docx"
+            )
+
         return context
