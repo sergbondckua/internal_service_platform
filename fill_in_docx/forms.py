@@ -2,8 +2,12 @@ from datetime import datetime
 
 from django import forms
 
+from fill_in_docx.enums import LegalFormChoices, PersonPositionChoices
+
 
 class PartyDataForm(forms.Form):
+    """Форма для введення даних для договору"""
+
     contract_number = forms.CharField(
         label="Номер договору",
         max_length=100,
@@ -27,7 +31,7 @@ class PartyDataForm(forms.Form):
         ),
     )
     source_price = forms.FloatField(
-        label="Ціна за місяць",
+        label="Ціна грн/місяць",
         required=True,
         widget=forms.TextInput(
             attrs={
@@ -57,15 +61,21 @@ class PartyDataForm(forms.Form):
         required=False,
         widget=forms.TextInput(attrs={"type": "date"}),
     )
+    legal_form = forms.ChoiceField(
+        label="Юридична форма",
+        choices=LegalFormChoices.choices,
+        required=True,
+        widget=forms.Select(attrs={"class": "form-select"}),
+    )
     full_name = forms.CharField(
-        label="Повне найменування юр. особи",
+        label="Найменування юр. особи",
         max_length=255,
         required=True,
         widget=forms.TextInput(
             attrs={
                 "class": "form-control",
                 "size": "50",
-                "placeholder": 'ОБ\'ЄДНАННЯ СПІВВЛАСНИКІВ БАГАТОКВАРТИРНОГО БУДИНКУ "БАРВІНОК"',
+                "placeholder": '"БАРВІНОК"',
             }
         ),
     )
@@ -89,12 +99,18 @@ class PartyDataForm(forms.Form):
             attrs={
                 "class": "form-control",
                 "size": "50",
-                "placeholder": "м. Місто, вулиця Вулиця, будинок 000",
+                "placeholder": "вулиця Вулиця, будинок 000",
             }
         ),
     )
+    person_position = forms.ChoiceField(
+        label="Посада уповноваженої особи",
+        choices=PersonPositionChoices.choices,
+        required=True,
+        widget=forms.Select(attrs={"class": "form-select"}),
+    )
     person_name = forms.CharField(
-        label="Уповноважена особа",
+        label="ПІБ уповноваженої особи",
         max_length=100,
         required=True,
         widget=forms.TextInput(
@@ -141,7 +157,7 @@ class PartyDataForm(forms.Form):
 в АТ КБ "Банк"
 МФО 654321
 ЄДРПОУ 12345678
-т. 097-123-45-67"""
+т. 097-123-45-67""",
             }
         ),
         required=True,

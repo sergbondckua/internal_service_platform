@@ -3,7 +3,7 @@ from django.db import models
 
 class PrefixStreetChoices(models.TextChoices):
     ST = "вул.", "вулиця"
-    BUL = "б.", "бульвар"
-    PROSPECT = "пр.", "проспект"
+    BUL = "б-р", "бульвар"
+    PROSPECT = "просп.", "проспект"
     PROV = "пров.", "провулок"
-    UZV = "узв.", "узвіз"
+    UZV = "узвіз", "узвіз"

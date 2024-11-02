@@ -19,6 +19,8 @@ class ContractGenerateView(FormView):
     def form_valid(self, form: PartyDataForm):
         # Створення об'єкта PartyData з даних форми
 
+        full_name_organisation = f"{form.cleaned_data['legal_form']} {form.cleaned_data['full_name']}"
+
         party_data = PartyData(
             contract_number=form.cleaned_data["contract_number"],
             date_contract=form.cleaned_data["date_contract"],
@@ -27,9 +29,10 @@ class ContractGenerateView(FormView):
                 "old_contract_number", ""
             ),
             old_date_contract=form.cleaned_data.get("old_date_contract", ""),
-            full_name=form.cleaned_data["full_name"],
+            full_name=full_name_organisation,
             short_name=form.cleaned_data.get("short_name", ""),
             address=form.cleaned_data["address"],
+            person_position=form.cleaned_data["person_position"],
             person_name=form.cleaned_data["person_name"],
             phone_number=form.cleaned_data["phone_number"],
             city=form.cleaned_data["city"],

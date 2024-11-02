@@ -42,6 +42,10 @@ class DataGenerator:
                 if self.party_data.short_name
                 else self.party_data.full_name.upper()
             ),
+            "person_position": self.party_data.person_position,
+            "genitive_person_position": self.genitive_name.to_genitive(
+                self.party_data.person_position
+            ).lower(),
             "person_party_one": self.party_data.person_name,
             "short_name": short_name,
             "genitive_name": self.genitive_name.to_genitive(

@@ -14,6 +14,7 @@ class PartyData:
     full_name: str
     short_name: str
     address: str
+    person_position: str
     person_name: str
     phone_number: str
     city: str

@@ -28,5 +28,5 @@ if __name__ == '__main__':
 
     # Приклад використання
     name_declension = NameDeclension()
-    gen_name = name_declension.to_genitive("Мельник Петро Богданович")
+    gen_name = name_declension.to_genitive("тимчасово Виконуючий обов\'язки директора")
     print(gen_name)
