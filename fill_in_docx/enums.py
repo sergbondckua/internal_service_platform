@@ -27,3 +27,16 @@ class PersonPositionChoices(TextChoices):
         "Виконуючий обов\'язки директора",
     )
     WITHOUT = " ", "Без посади"
+
+class CityObjectTypeChoices(TextChoices):
+    """Типи об'єктів міста."""
+
+    STREET = "вулиця", "вулиця"
+    LANE = "провулок", "провулок"
+    BOULEVARD = "бульвар", "бульвар"
+    AVENUE = "проспект", "проспект"
+    ALLEY = "алея", "алея"
+    DESCENT = "узвіз", "узвіз"
+    EMBANKMENT = "набережна", "набережна"
+    SQUARE = "площа", "площа"
+    HIGHWAY = "шоссе", "шоссе"

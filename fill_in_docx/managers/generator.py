@@ -27,13 +27,20 @@ class DataGenerator:
 
         person_name_parts = self.party_data.person_name.split()
         short_name = f"{person_name_parts[1]} {person_name_parts[0].upper()}"
+        including_electricity_cost = (
+            "Вказана вартість включає видатки на сплату спожитої обладнанням Сторони 2 електроенергії."
+            if self.party_data.including_electricity_cost
+            else ""
+        )
 
         return {
             "contract_number": f"{self.party_data.contract_number}-{self.party_data.date_contract.strftime('%d%m%y')}",
             "old_contract_number": self.party_data.old_contract_number,
-            "old_date_contract": self.party_data.old_date_contract.strftime(
-                "%d.%m.%Y"
-            ) if self.party_data.old_date_contract else "",
+            "old_date_contract": (
+                self.party_data.old_date_contract.strftime("%d.%m.%Y")
+                if self.party_data.old_date_contract
+                else ""
+            ),
             "city": self.party_data.city,
             "from_date": self.party_data.date_contract.strftime('"%d" %B %Y"'),
             "party_one": self.party_data.full_name.upper(),
@@ -58,6 +65,7 @@ class DataGenerator:
             "total_price_text": self.total_price_in_uah.format_result(),
             "total_price": str(int(self.total_price)),
             "total_pennies": f"{self.total_price_in_uah.extract_pennies():0>2}",
+            "including_electricity_cost": including_electricity_cost,
             "person_party_one_phonenumber": self.party_data.phone_number,
             "bank_details": self.party_data.bank_details.strip()
             .replace("\n\n", "\n")

@@ -8,7 +8,7 @@ logging.basicConfig(
 
 
 class TemplateFiller:
-    """Заповнює шаблон договору"""
+    """Заповнює шаблон договору та редагує зазначені абзаци"""
 
     def __init__(self, template_path, output_path):
         self.template_path = template_path
@@ -19,13 +19,18 @@ class TemplateFiller:
             output_path,
         )
 
-    def fill_template(self, data: dict, bold_keys: list = None):
-        """Заповнення шаблону договору"""
+    def fill_and_edit(
+        self,
+        data: dict,
+        text_to_delete: list[str] = None,
+        bold_keys: list[str] = None,
+    ):
+        """Заповнює шаблон договору та видаляє зазначені абзаци"""
 
         if bold_keys is None:
             bold_keys = []
         logging.info(
-            "Початок заповнення шаблону. Кількість маркерів для виділення жирним: %d",
+            "Початок обробки шаблону. Кількість маркерів для виділення жирним: %d",
             len(bold_keys),
         )
 
@@ -34,7 +39,11 @@ class TemplateFiller:
             doc = Document(self.template_path)
             logging.info("Шаблон завантажено успішно з %s", self.template_path)
 
-            # Обробка абзаців та таблиць
+            # Видалення абзаців з вказаним текстом
+            if text_to_delete:
+                self._delete_paragraph(doc, text_to_delete)
+
+            # Заповнення шаблону
             self._process_paragraphs(doc, data, bold_keys)
             self._process_tables(doc, data, bold_keys)
 
@@ -43,7 +52,28 @@ class TemplateFiller:
             logging.info("Документ збережено успішно в %s", self.output_path)
 
         except Exception as e:
-            logging.error("Помилка під час заповнення шаблону: %s", str(e))
+            logging.error("Помилка під час обробки шаблону: %s", str(e))
+
+    @staticmethod
+    def _delete_paragraph(doc, texts_to_delete: list = None):
+        """Видаляє абзаци, що містять будь-який з вказаних текстів, з документа"""
+
+        if texts_to_delete is None:
+            texts_to_delete = []
+        logging.info(
+            "Початок видалення абзаців з текстами, кількість: %d",
+            len(texts_to_delete),
+        )
+
+        logging.info("Видалення абзаців з текстами: %s", texts_to_delete)
+        for paragraph in doc.paragraphs:
+            for text in texts_to_delete:
+                if text in paragraph.text:
+                    p_element = paragraph._element
+                    p_element.getparent().remove(p_element)
+                    p_element.clear()
+                    logging.info("Абзац з текстом '%s' видалено.", text)
+                    break  # Вийти з циклу text після видалення абзацу
 
     @staticmethod
     def _replace_markers_in_text(

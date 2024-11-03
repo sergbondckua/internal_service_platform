@@ -9,6 +9,7 @@ class PartyData:
     contract_number: str
     date_contract: datetime
     source_price: float
+    including_electricity_cost: bool
     old_contract_number: str
     old_date_contract: datetime | str
     full_name: str

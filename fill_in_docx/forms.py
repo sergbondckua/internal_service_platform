@@ -2,7 +2,11 @@ from datetime import datetime
 
 from django import forms
 
-from fill_in_docx.enums import LegalFormChoices, PersonPositionChoices
+from fill_in_docx.enums import (
+    LegalFormChoices,
+    PersonPositionChoices,
+    CityObjectTypeChoices,
+)
 
 
 class PartyDataForm(forms.Form):
@@ -10,13 +14,26 @@ class PartyDataForm(forms.Form):
 
     contract_number = forms.CharField(
         label="Номер договору",
-        max_length=100,
+        max_length=15,
         required=True,
         widget=forms.TextInput(
             attrs={
                 "class": "form-control",
-                "size": "15",
-                "placeholder": "ОСББ-001-01012024",
+                "size": "8",
+                "placeholder": "ОСББ-001",
+            }
+        ),
+    )
+    contract_number_suffix = forms.CharField(
+        label="Суфікс номера договору",
+        max_length=8,
+        required=True,
+        widget=forms.TextInput(
+            attrs={
+                "class": "form-control",
+                "size": "8",
+                "value": datetime.now().replace(day=1).strftime("%d%m%y"),
+                "readonly": True,
             }
         ),
     )
@@ -41,6 +58,39 @@ class PartyDataForm(forms.Form):
                 "placeholder": "1.00",
                 "class": "form-control",
                 "size": "6",
+            }
+        ),
+    )
+    cost_by_methodic = forms.BooleanField(
+        label="Сума визначена за діючою Методикою",
+        required=False,
+        widget=forms.CheckboxInput(
+            attrs={
+                "class": "form-check-input",
+                "type": "checkbox",
+                "default": False,
+            }
+        ),
+    )
+    including_electricity_cost = forms.BooleanField(
+        label="Сума з урахуванням вартості електроенергії",
+        required=False,
+        widget=forms.CheckboxInput(
+            attrs={
+                "class": "form-check-input",
+                "type": "checkbox",
+                "default": False,
+            }
+        ),
+    )
+    contract_to_rem = forms.BooleanField(
+        label="Договір з міським РЕМ",
+        required=False,
+        widget=forms.CheckboxInput(
+            attrs={
+                "class": "form-check-input",
+                "type": "checkbox",
+                "default": True,
             }
         ),
     )
@@ -91,15 +141,33 @@ class PartyDataForm(forms.Form):
             }
         ),
     )
-    address = forms.CharField(
-        label="Місцезнаходження юридичної особи",
+    city_obj_type = forms.ChoiceField(
+        label="Топонімічна назва",
+        choices=CityObjectTypeChoices.choices,
+        required=True,
+        widget=forms.Select(attrs={"class": "form-select"}),
+    )
+    street_name = forms.CharField(
+        label="Назва вулиці",
         max_length=255,
         required=True,
         widget=forms.TextInput(
             attrs={
                 "class": "form-control",
                 "size": "50",
-                "placeholder": "вулиця Вулиця, будинок 000",
+                "placeholder": "Перемоги",
+            }
+        ),
+    )
+    building_number = forms.CharField(
+        label="Номер будинку",
+        max_length=5,
+        required=True,
+        widget=forms.TextInput(
+            attrs={
+                "class": "form-control",
+                "size": "5",
+                "placeholder": "000",
             }
         ),
     )
