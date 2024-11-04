@@ -22,10 +22,7 @@ class PersonPositionChoices(TextChoices):
     DIRECTOR = "Директор", "Директор"
     HEADMAN = "Начальник", "Начальник"
     COMMANDER = "Командир", "Командир"
-    ACTING_DIRECTOR = (
-        "Виконуючий обов\'язки директора",
-        "Виконуючий обов\'язки директора",
-    )
+    ACTING_DIRECTOR = "Виконуючий обов\'язки директора", "В.о директора",
     WITHOUT = " ", "Без посади"
 
 class CityObjectTypeChoices(TextChoices):

@@ -1,12 +1,131 @@
-{% extends "search_key/base.html" %}
+{% extends "fill_in_docx/base.html" %}
+
+{% block title %}Форма для договору{% endblock %}
 
 {% block content %}
-    <title>{% block title %}Fill in docx{% endblock %}</title>
+    <div class="container mt-5">
+        <div class="content-box p-4 shadow-lg rounded bg-light">
+            <h2 class="mb-4 text-center">Форма для договору</h2>
+            <form method="post" action=".">
+                {% csrf_token %}
+                <div class="row g-3">
 
-    <h1>Введіть дані для створення договору</h1>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Створити договір</button>
-    </form>
+                    <!-- Contract Number with Suffix and Date -->
+                    <div class="col-md-6">
+                        <label for="{{ form.contract_number.id_for_label }}" class="form-label">Номер договору</label>
+                        <div class="input-group">
+                            {{ form.contract_number }}
+                            {{ form.contract_number_suffix }}
+                            <span class="input-group-text">від</span>
+                            {{ form.date_contract }}
+                        </div>
+                    </div>
+
+                    <!-- City -->
+                    <div class="col-md-6">
+                        <label for="{{ form.city.id_for_label }}" class="form-label">{{ form.city.label }}</label>
+                        {{ form.city }}
+                    </div>
+
+                    <!-- Full Name and Short Name -->
+                    <div class="col-md-8">
+                        <label for="{{ form.full_name.id_for_label }}" class="form-label">Назва юридичної особи</label>
+                        <div class="input-group">
+                            {{ form.legal_form }}
+                            {{ form.full_name }}
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="{{ form.short_name.id_for_label }}" class="form-label">{{ form.short_name.label }}</label>
+                        {{ form.short_name }}
+                    </div>
+
+                    <!-- Authorized Person Details -->
+                    <div class="col-md-8">
+                        <label for="{{ form.person_position.id_for_label }}" class="form-label">Уповноважена особа</label>
+                        <div class="input-group">
+                            {{ form.person_position }}
+                            {{ form.person_name }}
+                        </div>
+                    </div>
+
+                    <!-- Phone Number -->
+                    <div class="col-md-4">
+                        <label for="{{ form.phone_number.id_for_label }}" class="form-label">{{ form.phone_number.label }}</label>
+                        {{ form.phone_number }}
+                    </div>
+
+                    <!-- Address Fields -->
+                    <div class="col-md-12">
+                        <label class="form-label">Адреса об'єкта:</label>
+                        <div class="input-group">
+                            {{ form.city_obj_type }}
+                            {{ form.street_name }}
+                            <span class="input-group-text">буд.</span>
+                            {{ form.building_number }}
+                        </div>
+                    </div>
+
+                    <!-- Source Price -->
+                    <div class="col-md-2">
+                        <label for="{{ form.source_price.id_for_label }}" class="form-label">{{ form.source_price.label }}</label>
+                        {{ form.source_price }}
+                    </div>
+
+                    <!-- Checkbox Fields -->
+                    <div class="col-md-4">
+                        <label class="form-label">Додаткові умови:</label>
+                        <div class="form-check">
+                            {{ form.cost_by_methodic }}
+                            <label class="form-check-label" for="{{ form.cost_by_methodic.id_for_label }}">{{ form.cost_by_methodic.label }}</label>
+                        </div>
+                        <div class="form-check">
+                            {{ form.including_electricity_cost }}
+                            <label class="form-check-label" for="{{ form.including_electricity_cost.id_for_label }}">{{ form.including_electricity_cost.label }}</label>
+                        </div>
+                        <div class="form-check">
+                            {{ form.contract_to_rem }}
+                            <label class="form-check-label" for="{{ form.contract_to_rem.id_for_label }}">{{ form.contract_to_rem.label }}</label>
+                        </div>
+                    </div>
+
+                    <!-- Bank Details -->
+                    <div class="col-md-6">
+                        <label for="{{ form.bank_details.id_for_label }}" class="form-label">{{ form.bank_details.label }}</label>
+                        {{ form.bank_details }}
+                    </div>
+
+                    <!-- Old Contract Number and Date -->
+                    <div class="col-md-12">
+                        <label for="{{ form.old_contract_number.id_for_label }}" class="form-label">Попередній договір</label>
+                        <div class="input-group">
+                            {{ form.old_contract_number }}
+                            <span class="input-group-text">від</span>
+                            {{ form.old_date_contract }}
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="col-12 text-center mt-4">
+                        <button type="submit" class="btn btn-primary px-5">СФОРМУВАТИ</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
 {% endblock %}
+
+
+
+{#{% extends "search_key/base.html" %}#}
+{##}
+{#{% block content %}#}
+{#    <title>{% block title %}Fill in docx{% endblock %}</title>#}
+{##}
+{#    <h1>Введіть дані для створення договору</h1>#}
+{#    <form method="post">#}
+{#        {% csrf_token %}#}
+{#        {{ form.as_p }}#}
+{#        <button type="submit">Створити договір</button>#}
+{#    </form>#}
+{#{% endblock %}#}

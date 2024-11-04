@@ -68,7 +68,7 @@ class PartyDataForm(forms.Form):
             attrs={
                 "class": "form-check-input",
                 "type": "checkbox",
-                "default": False,
+                "checked": False,
             }
         ),
     )
@@ -79,7 +79,7 @@ class PartyDataForm(forms.Form):
             attrs={
                 "class": "form-check-input",
                 "type": "checkbox",
-                "default": False,
+                "checked": False,
             }
         ),
     )
@@ -90,7 +90,7 @@ class PartyDataForm(forms.Form):
             attrs={
                 "class": "form-check-input",
                 "type": "checkbox",
-                "default": True,
+                "checked": True,
             }
         ),
     )
@@ -166,8 +166,8 @@ class PartyDataForm(forms.Form):
         widget=forms.TextInput(
             attrs={
                 "class": "form-control",
-                "size": "5",
-                "placeholder": "000",
+                "size": "7",
+                "placeholder": "0/0",
             }
         ),
     )
@@ -190,7 +190,7 @@ class PartyDataForm(forms.Form):
         ),
     )
     phone_number = forms.CharField(
-        label="Номер телефону уповноваженоїособи",
+        label="Номер телефону уповноваженої особи",
         max_length=15,
         required=True,
         widget=forms.TextInput(
