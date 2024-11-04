@@ -11,8 +11,8 @@ WORKDIR /usr/src/app
 
 # Install system dependencies
 RUN apt update && \
-    apt install -y --no-install-recommends && \
-    rm -rf /var/lib/apt/lists/* && \
+#    apt install -y --no-install-recommends && \
+#    rm -rf /var/lib/apt/lists/* && \
     apt install -y locales && \
     locale-gen uk_UA.UTF-8
 
