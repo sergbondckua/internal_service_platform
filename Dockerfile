@@ -14,7 +14,8 @@ RUN apt update && \
 #    apt install -y --no-install-recommends && \
 #    rm -rf /var/lib/apt/lists/* && \
     apt install -y locales && \
-    locale-gen uk_UA.UTF-8
+    sed -i -e "s/# uk_UA.UTF-8 UTF-8/uk_UA.UTF-8 UTF-8/" /etc/locale.gen && \
+    dpkg-reconfigure --frontend=noninteractive locales
 
 # Upgrade pip and install dependencies
 RUN pip install --upgrade pip
