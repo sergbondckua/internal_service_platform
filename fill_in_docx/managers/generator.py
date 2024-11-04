@@ -32,6 +32,12 @@ class DataGenerator:
             if self.party_data.including_electricity_cost
             else ""
         )
+        for_osbb_zhbk = (
+            " - об’єднання співвласників інфраструктури об’єкта доступу"
+            if "СПІВВЛАСНИКІВ" or "КООПЕРАТИВ" in self.party_data.full_name
+            else " "
+        )
+        print(for_osbb_zhbk, flush=True)
 
         return {
             "contract_number": f"{self.party_data.contract_number}-{self.party_data.date_contract.strftime('%d%m%y')}",
@@ -43,6 +49,7 @@ class DataGenerator:
             ),
             "city": self.party_data.city,
             "from_date": self.party_data.date_contract.strftime('"%d" %B %Y"'),
+            "for_osbb_zhbk": for_osbb_zhbk,
             "party_one": self.party_data.full_name.upper(),
             "party_one_short_name": (
                 self.party_data.short_name.upper()
