@@ -10,10 +10,10 @@ ENV PYTHONUNBUFFERED 1
 WORKDIR /usr/src/app
 
 # Install system dependencies
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends && \
+RUN apt update && \
+    apt install -y --no-install-recommends && \
     rm -rf /var/lib/apt/lists/* && \
-    apt-get install -y locales && \
+    apt install -y locales && \
     locale-gen uk_UA.UTF-8
 
 # Upgrade pip and install dependencies
