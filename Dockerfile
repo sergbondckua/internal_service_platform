@@ -31,9 +31,9 @@ COPY . .
 EXPOSE 8000
 
 # Set the environment variables for the desired locale
-ENV LANG=uk_UA.UTF-8 \
-    LANGUAGE=uk_UA:uk \
-    LC_ALL=uk_UA.UTF-8
+ENV LANG uk_UA.UTF-8
+ENV LANGUAGE uk_UA:uk
+ENV LC_ALL uk_UA.UTF-8
 
 # Command to run the application
 #CMD ["gunicorn","-b","0.0.0.0:8001","internal_service_platform.wsgi:application"]
