@@ -34,10 +34,12 @@ class DataGenerator:
         )
         for_osbb_zhbk = (
             " - об’єднання співвласників інфраструктури об’єкта доступу"
-            if "СПІВВЛАСНИКІВ" or "КООПЕРАТИВ" in self.party_data.full_name
-            else " "
+            if any(
+                keyword in self.party_data.full_name
+                for keyword in ("СПІВВЛАСНИКІВ", "КООПЕРАТИВ")
+            )
+            else ""
         )
-        print(for_osbb_zhbk, flush=True)
 
         return {
             "contract_number": f"{self.party_data.contract_number}-{self.party_data.date_contract.strftime('%d%m%y')}",
