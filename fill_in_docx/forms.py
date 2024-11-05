@@ -102,14 +102,14 @@ class PartyDataForm(forms.Form):
             attrs={
                 "class": "form-control",
                 "size": "20",
-                "placeholder": "Якщо є, для дод. уг. на припинення дії цього договору",
+                "placeholder": "ОЛД/001",
             }
         ),
     )
     old_date_contract = forms.DateField(
         label="Дата старого договору",
         required=False,
-        widget=forms.TextInput(attrs={"type": "date"}),
+        widget=forms.TextInput(attrs={"class": "form-control", "type": "date"}),
     )
     legal_form = forms.ChoiceField(
         label="Юридична форма",
