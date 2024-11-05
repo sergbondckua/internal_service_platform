@@ -16,8 +16,8 @@ services:
       - .env
     volumes:
       - .:/usr/src/app
-      - ./static:/usr/src/app/static
-      - ./media:/usr/src/app/media
+      - static_volume:/usr/src/app/static
+      - media_volume:/usr/src/app/media
 
   db:
     image: postgres:latest
@@ -47,8 +47,8 @@ services:
     restart: always
     image: nginx_image
     volumes:
-      - ./static:/usr/src/app/static
-      - ./media:/usr/src/app/media
+      - static_volume:/usr/src/app/static
+      - media_volume:/usr/src/app/media
       - ./docker/nginx/letsencrypt:/etc/letsencrypt
       - ./docker/nginx/www:/var/www/certbot
 
