@@ -17,7 +17,7 @@ services:
     volumes:
       - .:/usr/src/app
       - static_volume:/usr/src/app/static
-      - media_volume:/usr/src/app/media
+      - ./media:/usr/src/app/media
 
   db:
     image: postgres:latest
