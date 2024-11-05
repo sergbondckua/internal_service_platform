@@ -20,20 +20,7 @@ class PartyDataForm(forms.Form):
             attrs={
                 "class": "form-control",
                 "size": "8",
-                "placeholder": "ОСББ-001",
-            }
-        ),
-    )
-    contract_number_suffix = forms.CharField(
-        label="Суфікс номера договору",
-        max_length=8,
-        required=True,
-        widget=forms.TextInput(
-            attrs={
-                "class": "form-control",
-                "size": "8",
-                "value": datetime.now().replace(day=1).strftime("%d%m%y"),
-                "readonly": True,
+                "placeholder": "ОСББ-001-",
             }
         ),
     )
@@ -44,6 +31,7 @@ class PartyDataForm(forms.Form):
                 "class": "form-control",
                 "value": datetime.now().replace(day=1).strftime("%Y-%m-%d"),
                 "type": "date",
+                "onchange": "formatDate()",
             }
         ),
     )
@@ -161,7 +149,7 @@ class PartyDataForm(forms.Form):
     )
     building_number = forms.CharField(
         label="Номер будинку",
-        max_length=5,
+        max_length=7,
         required=True,
         widget=forms.TextInput(
             attrs={
