@@ -1,11 +1,34 @@
-<!-- templates/fill_in_docx/contract_success.html -->
-<h2>Договори успішно згенеровані!</h2>
+{% extends "fill_in_docx/base.html" %}
 
-<p>Скачайте документи за посиланнями нижче:</p>
-<ul>
-    <li><a href="{{ filled_contract_url }}" download>Скачати договір</a></li>
-    <li><a href="{{ filled_pax_akt_url }}" download>Скачати акт</a></li>
-    {% if filled_add_agreement_url %}
-        <li><a href="{{ filled_add_agreement_url }}" download>Скачати додаткову угоду</a></li>
-    {% endif %}
-</ul>
+{% block title %}Успішне створення договору{% endblock %}
+
+{% block content %}
+  <div class="text-center">
+    <h3 class="display-5 text-success mb-4">Документи успішно створено!</h3>
+    <p class="lead mb-5">Ваші документи готові до завантаження. Натисніть на відповідні посилання, щоб завантажити
+      їх.</p>
+
+    <div class="list-group list-group-flush mb-4">
+      <a href="{{ filled_contract_url }}"
+         class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+        <span><i class="bi bi-file-earmark-word-fill"></i> Договір</span>
+        <span class="badge bg-primary rounded-pill"><i class="bi bi-download"></i> Завантажити</span>
+      </a>
+      <a href="{{ filled_pax_akt_url }}"
+         class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+        <span><i class="bi bi-file-earmark-word-fill"></i> Рахунок. Акт виконаних робіт.</span>
+        <span class="badge bg-primary rounded-pill"><i class="bi bi-download"></i> Завантажити</span>
+      </a>
+      {% if filled_add_agreement_url %}
+        <a href="{{ filled_add_agreement_url }}"
+           class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+          <span><i class="bi bi-file-earmark-word-fill"></i> Додаткова угода</span>
+          <span class="badge bg-primary rounded-pill"><i class="bi bi-download"></i> Завантажити</span>
+        </a>
+      {% endif %}
+    </div>
+
+    <a href="{% url 'fill_in_docx:generate_contract' %}" class="btn btn-outline-secondary mt-3"><i class="bi bi-arrow-left"></i> Повернутися на
+      головну</a>
+  </div>
+{% endblock %}
