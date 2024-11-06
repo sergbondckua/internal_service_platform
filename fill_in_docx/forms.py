@@ -20,7 +20,7 @@ class PartyDataForm(forms.Form):
             attrs={
                 "class": "form-control",
                 "size": "8",
-                "placeholder": "ОСББ-001-",
+                "placeholder": "ОСББ-001",
             }
         ),
     )
