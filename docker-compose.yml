@@ -82,7 +82,7 @@ networks:
     driver: bridge
     ipam:
       config:
-        - subnet: 192.168.120/24
+        - subnet: 192.168.120.0/24
 
 volumes:
   pg_data:
