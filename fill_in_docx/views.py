@@ -1,10 +1,11 @@
-import os
 from pathlib import Path
 
 from django.conf import settings
 from django.urls import reverse_lazy
 from django.views.generic import TemplateView
 from django.views.generic.edit import FormView
+from slugify import slugify
+
 from fill_in_docx.forms import PartyDataForm
 from fill_in_docx.services.party_data_service import create_party_data
 from fill_in_docx.services.contract_generation_service import (
@@ -18,34 +19,36 @@ class ContractGenerateView(FormView):
     success_url = reverse_lazy("fill_in_docx:contract_success")
 
     def form_valid(self, form):
-
-        # Отримання даних з форми
+        # Отримуємо очищені дані форми
         form_data = form.cleaned_data
 
-        # Переконуємось, що сесія має ключ
-        if not self.request.session.session_key:
-            self.request.session.save()  # Зберігає сесію, створюючи session_key, якщо він відсутній
-
-        # Створення шляху до каталогу для збереження файлів
-        session_folder = (
-            Path(settings.MEDIA_ROOT)
-            / "filled_docx"
-            / self.request.session.session_key
+        # Створюємо унікальний slug для адреси (вулиця + номер будинку)
+        slug_street = slugify(
+            f"{form_data['street_name'].strip()} {form_data['building_number'].strip()}",
+            separator="_",
         )
+
+        # Перевіряємо, чи існує ключ сеансу, і створюємо, якщо необхідно
+        session_key = self.request.session.session_key
+        if not session_key:
+            self.request.session.save()
+            session_key = self.request.session.session_key
+
+        # Створюємо папку для збереження файлів, пов'язаних із цим сеансом
+        session_folder = Path(settings.MEDIA_ROOT, "filled_docx", session_key)
         session_folder.mkdir(parents=True, exist_ok=True)
 
-        # Створення об'єкта PartyData з даних форми
+        # Створюємо об’єкт PartyData та генеруємо документи
         party_data = create_party_data(form_data)
-
-        # Генерація та заповнення шаблонів
         generate_contract_documents(party_data, form_data, session_folder)
 
-        # Збереження назви компанії в сесії
+        # Зберігаємо назву організації та адресу у сеансі
         self.request.session["name_organisation"] = (
-            # f"{form_data['legal_form']} {form_data['full_name']}"
-            self.request.session.session_key
-        )
+            f"{form_data['legal_form']} {form_data['full_name']}"
+        ).upper()
+        self.request.session["slug_street"] = slug_street
 
+        # Викликаємо базову реалізацію form_valid, щоб перенаправити користувача
         return super().form_valid(form)
 
 
@@ -53,25 +56,43 @@ class ContractSuccessView(TemplateView):
     template_name = "fill_in_docx/contract_success.html"
 
     def get_context_data(self, **kwargs):
+        # Отримуємо початковий контекст
         context = super().get_context_data(**kwargs)
-        context["filled_contract_url"] = os.path.join(
-            settings.MEDIA_URL, "filled_docx/dogovir.docx"
-        )
-        context["filled_pax_akt_url"] = os.path.join(
-            settings.MEDIA_URL, "filled_docx/pax_akt.docx"
-        )
 
-        add_agreement_path = os.path.join(
-            settings.MEDIA_ROOT, "filled_docx/dod_ugoda.docx"
-        )
-        if os.path.exists(add_agreement_path):
-            context["filled_add_agreement_url"] = os.path.join(
-                settings.MEDIA_URL, "filled_docx/dod_ugoda.docx"
+        # Перевіряємо, чи існує ключ сеансу, і створюємо, якщо необхідно
+        session_key = self.request.session.session_key
+        if not session_key:
+            self.request.session.save()
+            session_key = self.request.session.session_key
+
+        # Створюємо шляхи до файлів, пов’язаних із сеансом
+        dir_session = Path("filled_docx", session_key)
+        save_path = Path(settings.MEDIA_ROOT, dir_session)
+
+        # Отримуємо slug для створення назв файлів
+        suffix_filled_file = self.request.session.get("slug_street", "")
+
+        # Перевіряємо, чи існує папка з файлами, і додаємо URL файлів у контекст
+        if save_path.exists():
+            context["filled_contract_url"] = (
+                f"{settings.MEDIA_URL}{dir_session}/dogovir_{suffix_filled_file}.docx"
+            )
+            context["filled_pax_akt_url"] = (
+                f"{settings.MEDIA_URL}{dir_session}/pax_akt_{suffix_filled_file}.docx"
             )
 
-        # Отримання даних з сесії
+            # Додаємо URL додаткової угоди, якщо файл існує
+            add_agreement_path = (
+                save_path / f"dod_ugoda_{suffix_filled_file}.docx"
+            )
+            if add_agreement_path.exists():
+                context["filled_add_agreement_url"] = (
+                    f"{settings.MEDIA_URL}{dir_session}/dod_ugoda_{suffix_filled_file}.docx"
+                )
+
+        # Додаємо назву організації у контекст
         context["name_organisation"] = self.request.session.get(
-            "name_organisation"
+            "name_organisation", ""
         )
 
         return context

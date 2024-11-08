@@ -10,4 +10,5 @@ python-docx<=1.1.2
 num2words<=0.5.13
 pymorphy3<=2.0.2
 pymorphy3-dicts-uk<=2.4.1.1.1663094765
+python-slugify~=8.0.4
 reportlab==4.0.8

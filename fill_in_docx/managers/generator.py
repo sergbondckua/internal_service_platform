@@ -42,7 +42,7 @@ class DataGenerator:
         )
 
         return {
-            "contract_number": f"{self.party_data.contract_number}-{self.party_data.date_contract.strftime('%d%m%y')}",
+            "contract_number": self.party_data.contract_number,
             "old_contract_number": self.party_data.old_contract_number,
             "old_date_contract": (
                 self.party_data.old_date_contract.strftime("%d.%m.%Y")
@@ -62,7 +62,7 @@ class DataGenerator:
             "genitive_person_position": self.genitive_name.to_genitive(
                 self.party_data.person_position
             ).lower(),
-            "person_party_one": self.party_data.person_name,
+            "person_party_one": self.party_data.person_name.title(),
             "short_name": short_name,
             "genitive_name": self.genitive_name.to_genitive(
                 self.party_data.person_name

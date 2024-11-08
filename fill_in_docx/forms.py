@@ -1,4 +1,5 @@
 from datetime import datetime
+from email.policy import default
 
 from django import forms
 
@@ -6,6 +7,7 @@ from fill_in_docx.enums import (
     LegalFormChoices,
     PersonPositionChoices,
     CityObjectTypeChoices,
+    CityOfUkraineChoices,
 )
 
 
@@ -23,6 +25,17 @@ class PartyDataForm(forms.Form):
                 "placeholder": "ОСББ-001",
             }
         ),
+    )
+    is_suffix_number = forms.BooleanField(
+        label="Суфікс для номера договору",
+        required=False,
+        widget=forms.CheckboxInput(
+            attrs={
+                "class": "form-check-input",
+                "type": "checkbox",
+                "checked": True,
+            }
+        )
     )
     date_contract = forms.DateField(
         label="Дата договору",
@@ -72,7 +85,7 @@ class PartyDataForm(forms.Form):
         ),
     )
     contract_to_rem = forms.BooleanField(
-        label="Договір з міським РЕМ",
+        label="Договір з енергопостачальною організацією",
         required=False,
         widget=forms.CheckboxInput(
             attrs={
@@ -97,7 +110,9 @@ class PartyDataForm(forms.Form):
     old_date_contract = forms.DateField(
         label="Дата старого договору",
         required=False,
-        widget=forms.TextInput(attrs={"class": "form-control", "type": "date"}),
+        widget=forms.TextInput(
+            attrs={"class": "form-control", "type": "date"}
+        ),
     )
     legal_form = forms.ChoiceField(
         label="Юридична форма",
@@ -189,15 +204,14 @@ class PartyDataForm(forms.Form):
             }
         ),
     )
-    city = forms.CharField(
+    city = forms.ChoiceField(
         label="Місто",
-        max_length=50,
+        choices=CityOfUkraineChoices.choices,
         required=True,
-        widget=forms.TextInput(
+        initial=CityOfUkraineChoices.CHERKASY,
+        widget=forms.Select(
             attrs={
-                "class": "form-control",
-                "size": "30",
-                "value": "Черкаси",
+                "class": "form-select",
             }
         ),
     )

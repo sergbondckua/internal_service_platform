@@ -11,6 +11,7 @@ class LegalFormChoices(TextChoices):
     FOP = "ФІЗИЧНА ОСОБА-ПІДПРИЄМЕЦЬ", "ФОП"
     GO = "ГРОМАДСЬКА ОРГАНІЗАЦІЯ", "ГО"
     PP = "ПРИВАТНЕ ПІДПРИЄМСТВО", "ПП"
+    KP = "КОМУНАЛЬНЕ ПІДПРИЄМСТВО", "КП"
     MU = "Військова частина", "ВЧ"
     WITHOUT = " ", "Не вказувати"
 
@@ -37,3 +38,19 @@ class CityObjectTypeChoices(TextChoices):
     EMBANKMENT = "набережна", "набережна"
     SQUARE = "площа", "площа"
     HIGHWAY = "шоссе", "шоссе"
+
+class CityOfUkraineChoices(TextChoices):
+    """Міста України."""
+    DNIPRO = "Дніпро", "Дніпро"
+    CHERKASY = "Черкаси", "Черкаси"
+    KAMIANSKE = "Кам\'янське", "Кам\'янське"
+    KRYVYY_RIH = "Кривий Ріг", "Кривий Ріг"
+    KYIV = "Київ", "Київ"
+    SAMARA = "Самар", "Самар"
+    PAVLOGRAD = "Павлоград", "Павлоград"
+    ZAPORIHIA = "Запоріжжя", "Запоріжжя"
+    ZHOVTI_VODY = "Жовті Води", "Жовті Води"
+    KREMENCHUK = "Кременчук", "Кременчук"
+    SINELNIKOVE = "Синельникове", "Синельникове"
+    VERHNODNIPROVSKY = "Верхньодніпровськ", "Верхньодніпровськ"
+    POLTAVA = "Полтава", "Полтава"
