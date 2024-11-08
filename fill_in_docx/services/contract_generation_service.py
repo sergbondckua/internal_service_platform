@@ -34,10 +34,10 @@ def determine_text_to_delete(form_data, party_data):
     return text_to_delete
 
 
-def generate_contract_documents(party_data, form_data):
+def generate_contract_documents(party_data, form_data, save_path):
     """Генерує документи договору і заповнює шаблони."""
     source_dir = os.path.join(settings.BASE_DIR, "fill_in_docx/source/")
-    filled_dir = os.path.join(settings.MEDIA_ROOT, "filled_docx")
+    filled_dir = save_path
 
     # Очищення директорії перед збереженням нових файлів
     clear_directory(filled_dir)

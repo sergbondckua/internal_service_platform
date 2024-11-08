@@ -154,5 +154,8 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = "bootstrap5"
 
+SESSION_COOKIE_AGE = 1800  # Наприклад, 30 хвилин
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+
 CSRF_TRUSTED_ORIGINS = ["https://fregi.pp.ua", "http://fregi.pp.ua", "http://fregi.click", "https://fregi.click"]
 
