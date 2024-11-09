@@ -154,8 +154,20 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = "bootstrap5"
 
-SESSION_COOKIE_AGE = 3600 * 12# Наприклад 12 годин
+SESSION_COOKIE_AGE = 3600 * 8  # Наприклад 8 годин
 SESSION_EXPIRE_AT_BROWSER_CLOSE = False
+
+# REDIS connection
+REDIS_HOST = "0.0.0.0"
+REDIS_PORT = "6379"
+
+# Celery connection
+CELERY_BROKER_URL = "redis://" + REDIS_HOST + ":" + REDIS_PORT + "/0"
+CELERY_BROKER_TRANSPORT_OPTIONS = {"visibility_timeout": 3600}
+CELERY_RESULT_BACKEND = "redis://" + REDIS_HOST + ":" + REDIS_PORT + "/0"
+CELERY_ACCEPT_CONTENT = ["application/json"]
+CELERY_TASK_SERIALIZER = "json"
+CELERY_RESULT_SERIALIZER = "json"
 
 CSRF_TRUSTED_ORIGINS = ["https://fregi.pp.ua", "http://fregi.pp.ua", "http://fregi.click", "https://fregi.click"]
 

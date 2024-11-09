@@ -26,7 +26,11 @@ class DataGenerator:
         """Генерує та повертає дані"""
 
         person_name_parts = self.party_data.person_name.split()
-        short_name = f"{person_name_parts[1]} {person_name_parts[0].upper()}"
+        short_name = (
+            f"{person_name_parts[1]} {person_name_parts[0].upper()}"
+            if len(person_name_parts) > 1
+            else person_name_parts[0]
+        )
         including_electricity_cost = (
             "Вказана вартість включає видатки на сплату спожитої обладнанням Сторони 2 електроенергії."
             if self.party_data.including_electricity_cost
