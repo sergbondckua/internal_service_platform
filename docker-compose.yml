@@ -4,19 +4,21 @@ services:
   web:
     build: .
     container_name: internal_service_platform
-    command: bash -c "./manage.py collectstatic --noinput && 
-             ./manage.py migrate  && 
-              gunicorn -b 0.0.0.0:8001 internal_service_platform.wsgi:application"
+    command: bash -c "
+      ./manage.py collectstatic --noinput &&
+      ./manage.py migrate  &&
+      gunicorn -b 0.0.0.0:8001 internal_service_platform.wsgi:application"
     restart: always
     ports:
       - "8001:8001"
     depends_on:
       - db
+      - redis
     env_file:
       - .env
     volumes:
       - .:/usr/src/app
-      - static_volume:/usr/src/app/static
+      - ./static:/usr/src/app/static
       - ./media:/usr/src/app/media
     networks:
       - internal_platform_network
@@ -51,16 +53,15 @@ services:
       context: ./docker/nginx/
     container_name: nginx_container
     restart: always
-    image: nginx_image
     volumes:
-      - static_volume:/usr/src/app/static
+      - ./static:/usr/src/app/static
       - ./media:/usr/src/app/media
       - ./docker/nginx/letsencrypt:/etc/letsencrypt
       - ./docker/nginx/www:/var/www/certbot
     networks:
       - internal_platform_network
-
     depends_on:
+      - certbot
       - web
     ports:
       - "81:80"
@@ -74,6 +75,41 @@ services:
       - ./docker/nginx/letsencrypt:/etc/letsencrypt
       - ./docker/nginx/log:/var/log/letsencrypt
       - ./docker/nginx/www:/var/www/certbot
+    networks:
+      - internal_platform_network
+
+  redis:
+    image: redis:latest
+    container_name: redis_container
+    restart: always
+    networks:
+      - internal_platform_network
+
+  celery_worker:
+    build: .
+    container_name: celery_worker
+    command: celery -A internal_service_platform worker --loglevel=info
+    depends_on:
+      - redis
+      - db
+    env_file:
+      - .env
+    volumes:
+      - .:/usr/src/app
+    networks:
+      - internal_platform_network
+
+  celery_beat:
+    build: .
+    container_name: celery_beat
+    command: celery -A internal_service_platform beat --loglevel=info
+    depends_on:
+      - redis
+      - db
+    env_file:
+      - .env
+    volumes:
+      - .:/usr/src/app
     networks:
       - internal_platform_network
 

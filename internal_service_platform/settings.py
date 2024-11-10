@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/4.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
+
 import os
 from pathlib import Path
 
@@ -134,16 +135,18 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 
+# Static files (CSS, JavaScript, Images)
 STATIC_URL = "/static/"
 STATIC_DIR = os.path.join(BASE_DIR, "static").replace("\\", "/")
 
-if DEBUG:
-    STATICFILES_DIRS = (STATIC_DIR,)
-else:
-    STATIC_ROOT = STATIC_DIR
+# Use STATICFILES_DIRS in debug mode and STATIC_ROOT in production
+STATICFILES_DIRS = [STATIC_DIR] if DEBUG else []
+STATIC_ROOT = None if DEBUG else STATIC_DIR
 
+# Media files
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media").replace("\\", "/")
+
 
 
 # Default primary key field type
@@ -162,12 +165,24 @@ REDIS_HOST = "0.0.0.0"
 REDIS_PORT = "6379"
 
 # Celery connection
-CELERY_BROKER_URL = "redis://" + REDIS_HOST + ":" + REDIS_PORT + "/0"
+REDIS_URL_TEMPLATE = "redis://{host}:{port}/{db}"
+REDIS_HOST = REDIS_HOST if DEBUG else "redis_container"
+REDIS_PORT = REDIS_PORT if DEBUG else "6379"
+CELERY_BROKER_URL = REDIS_URL_TEMPLATE.format(
+    host=REDIS_HOST, port=REDIS_PORT, db=0
+)
+CELERY_RESULT_BACKEND = REDIS_URL_TEMPLATE.format(
+    host=REDIS_HOST, port=REDIS_PORT, db=1
+)
 CELERY_BROKER_TRANSPORT_OPTIONS = {"visibility_timeout": 3600}
-CELERY_RESULT_BACKEND = "redis://" + REDIS_HOST + ":" + REDIS_PORT + "/0"
 CELERY_ACCEPT_CONTENT = ["application/json"]
 CELERY_TASK_SERIALIZER = "json"
 CELERY_RESULT_SERIALIZER = "json"
 
-CSRF_TRUSTED_ORIGINS = ["https://fregi.pp.ua", "http://fregi.pp.ua", "http://fregi.click", "https://fregi.click"]
 
+CSRF_TRUSTED_ORIGINS = [
+    "https://fregi.pp.ua",
+    "http://fregi.pp.ua",
+    "http://fregi.click",
+    "https://fregi.click",
+]

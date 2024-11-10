@@ -1,5 +1,6 @@
 import pymorphy3
 
+
 class NameDeclension:
     """Формуємо повне ім'я з родовим відмінком"""
 
@@ -10,10 +11,7 @@ class NameDeclension:
     def to_genitive(self, full_name) -> str:
         # Формуємо повне ім'я з родовими відмінками
         genitive_name = " ".join(
-            [
-                self._get_genitive_form(word)
-                for word in full_name.split()
-            ]
+            [self._get_genitive_form(word) for word in full_name.split()]
         ).title()
         return genitive_name
 
@@ -24,9 +22,9 @@ class NameDeclension:
         return genitive_form.word if genitive_form else word
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
 
     # Приклад використання
     name_declension = NameDeclension()
-    gen_name = name_declension.to_genitive("тимчасово Виконуючий обов\'язки директора")
+    gen_name = name_declension.to_genitive("тимчасово Виконуючий обов'язки директора")
     print(gen_name)

@@ -23,8 +23,12 @@ class PersonPositionChoices(TextChoices):
     DIRECTOR = "Директор", "Директор"
     HEADMAN = "Начальник", "Начальник"
     COMMANDER = "Командир", "Командир"
-    ACTING_DIRECTOR = "Виконуючий обов\'язки директора", "В.о директора",
+    ACTING_DIRECTOR = (
+        "Виконуючий обов'язки директора",
+        "В.о директора",
+    )
     WITHOUT = " ", "Без посади"
+
 
 class CityObjectTypeChoices(TextChoices):
     """Типи об'єктів міста."""
@@ -39,11 +43,13 @@ class CityObjectTypeChoices(TextChoices):
     SQUARE = "площа", "площа"
     HIGHWAY = "шоссе", "шоссе"
 
+
 class CityOfUkraineChoices(TextChoices):
     """Міста України."""
+
     DNIPRO = "Дніпро", "Дніпро"
     CHERKASY = "Черкаси", "Черкаси"
-    KAMIANSKE = "Кам\'янське", "Кам\'янське"
+    KAMIANSKE = "Кам'янське", "Кам'янське"
     KRYVYY_RIH = "Кривий Ріг", "Кривий Ріг"
     KYIV = "Київ", "Київ"
     SAMARA = "Самар", "Самар"

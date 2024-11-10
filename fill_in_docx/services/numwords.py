@@ -3,7 +3,7 @@ from num2words import num2words
 
 class FinancialAmountInUAH:
     """Конвертує числове значення фінансової суми в прописні слова
-        українською мовою з відповідними відмінками.
+    українською мовою з відповідними відмінками.
     """
 
     def __init__(self, amount):
@@ -11,18 +11,18 @@ class FinancialAmountInUAH:
         self.amount_in_words = self._convert_amount_to_words()
         self.pennies = self.extract_pennies()
         self.currency_word = self._get_declension(
-            int(self.amount), ["гривня", "гривні", "гривень"])
+            int(self.amount), ["гривня", "гривні", "гривень"]
+        )
         self.pennies_word = self._get_declension(
-            self.pennies, ["копійка", "копійки", "копійок"])
+            self.pennies, ["копійка", "копійки", "копійок"]
+        )
 
     def _convert_amount_to_words(self):
         """Перетворює цілу частину суми в пропис (для жіночого роду)"""
         amount_in_words = num2words(int(self.amount), lang="uk")
 
         # Корекція для числівників "одна" та "дві" для слова "гривня"
-        return amount_in_words.replace(" один", " одна").replace(
-            " два", " дві"
-        )
+        return amount_in_words.replace(" один", " одна").replace(" два", " дві")
 
     def extract_pennies(self) -> int:
         """Відокремлює кількість копійок з суми"""

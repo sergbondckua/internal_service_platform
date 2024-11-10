@@ -35,7 +35,7 @@ class PartyDataForm(forms.Form):
                 "type": "checkbox",
                 "checked": True,
             }
-        )
+        ),
     )
     date_contract = forms.DateField(
         label="Дата договору",
@@ -110,9 +110,7 @@ class PartyDataForm(forms.Form):
     old_date_contract = forms.DateField(
         label="Дата старого договору",
         required=False,
-        widget=forms.TextInput(
-            attrs={"class": "form-control", "type": "date"}
-        ),
+        widget=forms.TextInput(attrs={"class": "form-control", "type": "date"}),
     )
     legal_form = forms.ChoiceField(
         label="Юридична форма",

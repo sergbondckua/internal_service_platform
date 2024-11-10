@@ -113,10 +113,8 @@ class TemplateFiller:
                         for run in paragraph.runs:
                             run_text = run.text
                             for key, value in data.items():
-                                run_text, should_bold = (
-                                    self._replace_markers_in_text(
-                                        run_text, key, value, key in bold_keys
-                                    )
+                                run_text, should_bold = self._replace_markers_in_text(
+                                    run_text, key, value, key in bold_keys
                                 )
                                 run.text = run_text
                                 if should_bold:

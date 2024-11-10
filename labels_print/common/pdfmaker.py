@@ -112,9 +112,7 @@ class PDFGenerator:
         row_heights = [0.6 * cm, self.ROW_HEIGHT] * (len(label_data) // 2)
 
         # Create a table and set its style
-        table = Table(
-            label_data, colWidths=column_widths, rowHeights=row_heights
-        )
+        table = Table(label_data, colWidths=column_widths, rowHeights=row_heights)
         table.setStyle(TableStyle(self.TABLE_STYLES))
         return table
 
@@ -150,8 +148,8 @@ class PDFGenerator:
 
         # Organize label data into groups of 3 for better layout
         for i in range(0, len(label_data[0]), 3):
-            new_data.append(label_data[0][i:i+3])
-            new_data.append(label_data[1][i:i+3])
+            new_data.append(label_data[0][i : i + 3])
+            new_data.append(label_data[1][i : i + 3])
 
         return new_data
 
@@ -167,9 +165,7 @@ class PDFGenerator:
 
             for street in cell.buildings.all():
                 street_old = (
-                    f"({street.street.old_name})"
-                    if street.street.old_name
-                    else ""
+                    f"({street.street.old_name})" if street.street.old_name else ""
                 )
                 street_name = f"{street.street.name} {street_old}"
                 if street_name not in cell_groups[cell_name]:

@@ -19,3 +19,11 @@ def clear_directory(directory_path):
             logging.info(
                 f"Помилка видалення %s. Помилка: %s", file_path, str(e)
             )
+
+
+def get_session_key(request):
+    """Генерує або отримує ключ сесії"""
+    if not (session_key := request.session.session_key):
+        request.session.save()
+        session_key = request.session.session_key
+    return session_key

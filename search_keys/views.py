@@ -74,10 +74,7 @@ class StreetAutocompleteView(View):
         streets = self.model.objects.filter(
             Q(name__icontains=term) | Q(old_name__icontains=term)
         )[:10]
-        result = [
-            {"named": str(street), "street_id": street.id}
-            for street in streets
-        ]
+        result = [{"named": str(street), "street_id": street.id} for street in streets]
         return JsonResponse(result, safe=False)
 
 
@@ -91,9 +88,7 @@ class BuildingAutocompleteView(View):
         street_id = request.GET.get("street_id", "")
 
         buildings = (
-            self.model.objects.filter(
-                Q(street=street_id) & Q(number__icontains=term)
-            )
+            self.model.objects.filter(Q(street=street_id) & Q(number__icontains=term))
             .values("number")
             .distinct()
         )
@@ -163,9 +158,7 @@ class CellDetailApiView(APIView):
             serializer = CellListSerializer(cell)
             return Response(serializer.data)
         except Cell.DoesNotExist:
-            error_response = {
-                "error": "No cells found for the specified parameters."
-            }
+            error_response = {"error": "No cells found for the specified parameters."}
             return Response(error_response, status=404)
 
 
@@ -192,7 +185,5 @@ class StreetDetailApiView(APIView):
             serializer = StreetListSerializer(street)
             return Response(serializer.data)
         except Street.DoesNotExist:
-            error_response = {
-                "error": "No street found for the specified parameters."
-            }
+            error_response = {"error": "No street found for the specified parameters."}
             return Response(error_response, status=404)

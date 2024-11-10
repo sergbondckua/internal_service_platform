@@ -14,10 +14,7 @@ def determine_text_to_delete(form_data, party_data):
     text_to_delete = []
 
     # Видалення тексту, якщо договір без компенсації за електроенергію
-    if (
-        not form_data["contract_to_rem"]
-        or party_data.including_electricity_cost
-    ):
+    if not form_data["contract_to_rem"] or party_data.including_electricity_cost:
         text_to_delete += [
             "Розрахунки за спожиту електроенергію",
             "Оплата за спожиту",
@@ -26,10 +23,7 @@ def determine_text_to_delete(form_data, party_data):
         text_to_delete += ["Оплата за спожиту"]
 
     # Видалення тексту, якщо розрахунок не за методикою або включено електроенергію
-    if (
-        party_data.including_electricity_cost
-        or not form_data["cost_by_methodic"]
-    ):
+    if party_data.including_electricity_cost or not form_data["cost_by_methodic"]:
         text_to_delete += [
             "Розрахунок розміру щомісячної плати",
             "п. 2.8",

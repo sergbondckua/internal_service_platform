@@ -8,10 +8,8 @@ urlpatterns = [
     path("", include("search_keys.urls")),
     path("label/", include("labels_print.urls")),
     path("api-auth/", include("rest_framework.urls")),
-    path("fill/", include("fill_in_docx.urls")),
+    path("contract/", include("fill_in_docx.urls")),
 ]
 if settings.DEBUG:
     # Serve media files
-    urlpatterns += static(
-        settings.MEDIA_URL, document_root=settings.MEDIA_ROOT
-    )
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
