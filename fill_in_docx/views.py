@@ -4,7 +4,7 @@ from django.http import JsonResponse
 from django.urls import reverse_lazy
 from django.views.generic import TemplateView, FormView, View
 
-from fill_in_docx.services.utils import get_session_key
+from fill_in_docx.services.utils import get_session_key, get_available_files
 from fill_in_docx.tasks import generate_documents_task
 from fill_in_docx.forms import PartyDataForm
 from celery.result import AsyncResult
@@ -41,6 +41,7 @@ class ContractSuccessView(TemplateView):
                 "slug_street": self.request.session.get("slug_street", ""),
             }
         )
+
         return context
 
 
@@ -73,12 +74,9 @@ class CheckTaskStatusView(View):
                 "filled_add_agreement_url": f"{settings.MEDIA_URL}{dir_session}/dod_ugoda_{suffix_filled_file}.docx",
             }
 
-            # Check file existence
-            available_files = {
-                key: url
-                for key, url in files.items()
-                if (save_path / Path(url).name).exists()
-            }
+            # Перевіряємо, чи існують файли за вказаним шляхом
+            available_files = get_available_files(files, save_path)
+
             return JsonResponse(
                 {"status": "completed", "files": available_files}
             )

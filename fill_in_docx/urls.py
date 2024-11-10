@@ -11,7 +11,7 @@ urlpatterns = [
         name="generate_contract",
     ),
     path(
-        "contract_success/",
+        "success/",
         views.ContractSuccessView.as_view(),
         name="contract_success",
     ),

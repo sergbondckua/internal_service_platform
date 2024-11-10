@@ -1,4 +1,5 @@
 {% extends "fill_in_docx/base.html" %}
+{% load static %}
 
 {% block title %}Створення договору{% endblock %}
 
@@ -9,15 +10,15 @@
     <p class="lead mb-5">Натисніть на відповідні посилання, щоб завантажити
       їх.</p>
     {% if name_organisation %}
-    <div class="alert alert-info" role="alert">
+      <div class="alert alert-info" role="alert">
         <p class="text-center"><i class="bi bi-check-circle-fill"></i> {{ name_organisation }}</p>
       </div>
     {% endif %}
-<!-- Відображення посилань на файли -->
+    <!-- Відображення посилань на файли -->
     <div id="file-links">
       <div class="text-center">
-        <div class="spinner-border text-danger" role="status">
-          <span class="visually-hidden">Loading...</span>
+        <div class="spinner-border" style="width: 3rem; height: 3rem;" role="status">
+          <span class=""><i class="fs-3 bi bi-filetype-docx"></i></span>
         </div>
       </div>
     </div>
@@ -26,60 +27,8 @@
         class="bi bi-arrow-left"></i> Повернутися до форми</a>
   </div>
 
-
+  <!-- JavaScript для відстеження статусу завантаження файлів -->
   <script>
-      function checkTaskStatus(taskId, attempt = 1, maxAttempts = 10) {
-          fetch("{% url 'fill_in_docx:check_task_status' %}" + `?task_id=${taskId}`)
-              .then(response => response.json())
-              .then(data => {
-                  if (data.status === "completed") {
-                      // Відображення посилань на файли
-                      const linksContainer = document.getElementById("file-links");
-                      linksContainer.innerHTML = "";  // Очистити контейнер
-
-                      const listGroup = document.createElement("div");
-                      listGroup.classList.add("list-group", "list-group-flush", "mb-4");
-
-                      // Маппінг імен файлів
-                      const fileNames = {
-                          "filled_contract_url": "Договір",
-                          "filled_pax_akt_url": "Рахунок. Акт виконаних робіт",
-                          "filled_add_agreement_url": "Додаткова угода про припинення раніше укладеного договору"
-                      };
-
-                      for (const [key, url] of Object.entries(data.files)) {
-                          const listItem = document.createElement("a");
-                          listItem.href = url;
-                          listItem.classList.add("list-group-item", "list-group-item-action", "d-flex", "justify-content-between", "align-items-center");
-
-                          const spanText = document.createElement("span");
-                          const displayName = fileNames[key.toLowerCase()] || key.replace("_", " ").toUpperCase();
-                          spanText.innerHTML = `<i class="bi bi-file-earmark-word-fill"></i> ${displayName}`;
-                          listItem.appendChild(spanText);
-
-                          const spanBadge = document.createElement("span");
-                          spanBadge.classList.add("badge", "bg-primary", "rounded-pill");
-                          spanBadge.innerHTML = '<i class="bi bi-download"></i> Завантажити';
-                          listItem.appendChild(spanBadge);
-
-                          listGroup.appendChild(listItem);
-                      }
-
-                      linksContainer.appendChild(listGroup);
-                  } else if (attempt < maxAttempts) {
-                      // Якщо завдання ще не завершене, повторюємо запит
-                      setTimeout(() => checkTaskStatus(taskId, attempt + 1, maxAttempts), 2000);
-                  } else {
-                      // Показуємо повідомлення після досягнення максимальної кількості спроб
-                      const linksContainer = document.getElementById("file-links");
-                      linksContainer.innerHTML = "<p class='text-danger'>Завдання не завершене. Будь ласка, почніть спочатку, заповніть форму ще раз.</p>";
-                  }
-              })
-              .catch(error => {
-                  console.error('Error fetching task status:', error);
-              });
-      }
-
       document.addEventListener("DOMContentLoaded", () => {
           const taskId = "{{ task_id }}";
           if (taskId) {
@@ -87,7 +36,4 @@
           }
       });
   </script>
-
-
-
 {% endblock %}

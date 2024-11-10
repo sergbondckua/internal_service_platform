@@ -1,6 +1,6 @@
 import logging
 import os
-
+from pathlib import Path
 
 # Налаштування логування
 logging.basicConfig(
@@ -27,3 +27,21 @@ def get_session_key(request):
         request.session.save()
         session_key = request.session.session_key
     return session_key
+
+
+def get_available_files(files: dict, save_path: Path) -> dict:
+    """
+    Перевіряє наявність файлів у заданому каталозі та збирає інформацію про них.
+    """
+    available_files = {}
+    for key, url in files.items():
+        # Формуємо повний шлях до файлу на основі save_path та імені файлу з URL
+        file_path = save_path / Path(url).name
+        # Перевіряємо, чи існує файл за вказаним шляхом
+        if file_path.exists():
+            available_files[key] = {
+                "url": url,
+                "name": file_path.name,
+                "size": file_path.stat().st_size,  # Розмір файлу в байтах
+            }
+    return available_files
