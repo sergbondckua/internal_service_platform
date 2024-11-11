@@ -22,17 +22,18 @@ function toggleSuffix() {
     suffixElement.style.display = isSuffixChecked ? 'inline' : 'none';
 }
 
-// Виклик функції при завантаженні сторінки та на зміну поля is_suffix_number
+// Функція для форматування дати// Виклик функції при завантаженні сторінки та на зміну поля is_suffix_number
 document.getElementById("id_is_suffix_number").addEventListener("change", toggleSuffix);
 document.getElementById("id_date_contract").addEventListener("input", formatDate);
 
-
+// Функція для форматування розміру
 function formatFileSize(bytes) {
     if (bytes < 1024) return `${bytes} Б`;
     if (bytes < 1048576) return `${(bytes / 1024).toFixed(1)} КБ`;
     return `${(bytes / 1048576).toFixed(1)} МБ`;
 }
 
+// Функція для перевірки статусу завдання
 function checkTaskStatus(taskId, attempt = 1, maxAttempts = 10) {
     fetch(`/contract/check-task-status?task_id=${taskId}`)
         .then(response => response.json())
