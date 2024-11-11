@@ -198,14 +198,21 @@
 
           </div>
         </div>
-
+        
         <!-- Submit Button -->
         <div class="col-12 text-center mt-4">
           <button type="submit" class="btn btn-primary px-5"><i class="bi bi-columns-gap"></i> СФОРМУВАТИ
           </button>
         </div>
-
       </form>
     </div>
   </div>
+
+  <script>
+      // Викликаємо функції під час завантаження сторінки
+      window.onload = function () {
+          formatDate();
+          toggleSuffix();
+      };
+  </script>
 {% endblock %}
