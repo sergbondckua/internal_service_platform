@@ -36,15 +36,21 @@ def create_party_data(form_data):
         ],  # Враховує вартість електроенергії
         old_contract_number=form_data.get(
             "old_contract_number", ""
-        ).strip(),  # Попередній номер договору (якщо є)
+        ),  # Попередній номер договору (якщо є)
         old_date_contract=form_data.get(
             "old_date_contract", ""
         ),  # Дата попереднього договору
         full_name=full_name_organisation,  # Повна назва організації
-        short_name=form_data.get("short_name", ""),  # Скорочена назва (опційно)
+        short_name=form_data.get(
+            "short_name", ""
+        ),  # Скорочена назва (опційно)
         address=address,  # Адреса організації
-        person_position=form_data["person_position"],  # Посада відповідальної особи
-        person_name=form_data["person_name"].strip(),  # Ім'я відповідальної особи
+        person_position=form_data[
+            "person_position"
+        ],  # Посада відповідальної особи
+        person_name=form_data[
+            "person_name"
+        ].strip(),  # Ім'я відповідальної особи
         phone_number=form_data["phone_number"].strip(),  # Номер телефону
         city=form_data["city"].strip(),  # Місто
         bank_details=form_data["bank_details"],  # Банківські реквізити

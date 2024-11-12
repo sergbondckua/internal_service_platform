@@ -1,5 +1,6 @@
 import logging
 import os
+from datetime import datetime
 from pathlib import Path
 
 # Налаштування логування
@@ -45,3 +46,20 @@ def get_available_files(files: dict, save_path: Path) -> dict:
                 "size": file_path.stat().st_size,  # Розмір файлу в байтах
             }
     return available_files
+
+
+def get_years():
+    """Повертає поточний і попередній рік у форматах yyyy та yy."""
+    current_year_full = str(datetime.now().year)
+    last_year_full = str(int(current_year_full) - 1)
+
+    # Формати у вигляді двох цифр
+    current_year_short = current_year_full[-2:]
+    last_year_short = last_year_full[-2:]
+
+    return {
+        "current_year_full": current_year_full,
+        "last_year_full": last_year_full,
+        "current_year_short": current_year_short,
+        "last_year_short": last_year_short,
+    }

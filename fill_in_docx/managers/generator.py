@@ -1,9 +1,11 @@
 import locale
 import platform
+from datetime import datetime, timedelta
 
 from fill_in_docx.managers.party_data import PartyData
 from fill_in_docx.services.declension import NameDeclension
 from fill_in_docx.services.numwords import FinancialAmountInUAH
+from fill_in_docx.services.utils import get_years
 
 # Встановлюємо українську локаль
 locale.setlocale(
@@ -25,17 +27,22 @@ class DataGenerator:
     def generate(self) -> dict:
         """Генерує та повертає дані"""
 
+        # Структуруємо коротке ім'я
         person_name_parts = self.party_data.person_name.split()
-        if len(person_name_parts) > 1:
-            short_name = f"{person_name_parts[1].title()} {person_name_parts[0].upper()}"
-        else:
-            short_name = person_name_parts[0].upper()
+        short_name = (
+            f"{person_name_parts[1].title()} {person_name_parts[0].upper()}"
+            if len(person_name_parts) > 1
+            else person_name_parts[0].upper()
+        )
 
+        # Формуємо текст щодо вартості електроенергії
         including_electricity_cost = (
             "Вказана вартість включає видатки на сплату спожитої обладнанням Сторони 2 електроенергії."
             if self.party_data.including_electricity_cost
             else ""
         )
+
+        # Перевірка на об'єднання співвласників
         for_osbb_zhbk = (
             " - об’єднання співвласників інфраструктури об’єкта доступу"
             if any(
@@ -44,15 +51,21 @@ class DataGenerator:
             )
             else ""
         )
+        # Форматуємо дату старого договору
+        old_date_contract = (
+            self.party_data.old_date_contract.strftime("%d.%m.%Y")
+            if self.party_data.old_date_contract
+            else ""
+        )
+        years = get_years()
 
         return {
             "contract_number": self.party_data.contract_number,
             "old_contract_number": self.party_data.old_contract_number,
-            "old_date_contract": (
-                self.party_data.old_date_contract.strftime("%d.%m.%Y")
-                if self.party_data.old_date_contract
-                else ""
-            ),
+            "old_date_contract": old_date_contract,
+            "current_year_full": years["current_year_full"],
+            "current_year_short": years["current_year_short"],
+            "last_year_full": years["last_year_full"],
             "city": self.party_data.city,
             "from_date": self.party_data.date_contract.strftime('"%d" %B %Y"'),
             "for_osbb_zhbk": for_osbb_zhbk,
