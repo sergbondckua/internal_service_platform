@@ -59,20 +59,25 @@
           <div class="row g-3">
 
             <!-- Full Name and Short Name -->
-            <div class="col-md-12">
+            <div class="col-md-8">
               <label for="{{ form.full_name.id_for_label }}" class="form-label">
-                <i class="bi bi-vector-pen"></i> Повне найменування юридичної особи</label>
+                <i class="bi bi-vector-pen"></i><i class="bi bi-mortarboard"></i> Повне найменування юридичної особи</label>
               <div class="input-group">
                 {{ form.legal_form }}
                 <span class="input-group-text"><i class="bi bi-alphabet-uppercase"></i></span>
                 {{ form.full_name }}
-                <span id="id_short_name" class="input-group-text">Має зареєстровану скорочену назву?</span>
-                <div class="input-group-text">
-                  <div class="form-check form-switch">
-                    {{ form.is_short_name }}
-                  </div>
-                </div>
               </div>
+            </div>
+
+            <!-- Short Name -->
+            <div class="col-md-4">
+              <label for="{{ form.is_short_name.id_for_label }}" class="form-label">
+                <i class="bi bi-r-circle"></i> {{ form.is_short_name.label }}
+              </label>
+              <div class="form-check form-switch">
+                {{ form.is_short_name }}
+              </div>
+              <div id="short-name-display"></div>
             </div>
 
             <!-- Authorized Person Details -->
@@ -206,13 +211,11 @@
   </div>
 
   <script>
-
-
       // Викликаємо функції під час завантаження сторінки
       window.onload = function () {
           formatDate();
           toggleSuffix();
       };
-
   </script>
+
 {% endblock %}

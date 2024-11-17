@@ -1,5 +1,4 @@
 from datetime import datetime
-from email.policy import default
 
 from django import forms
 
@@ -131,7 +130,7 @@ class PartyDataForm(forms.Form):
         ),
     )
     is_short_name = forms.BooleanField(
-        label="Коротке найменування юр. особи",
+        label="Має зареєстровану скорочену назву?",
         required=False,
         widget=forms.CheckboxInput(
             attrs={

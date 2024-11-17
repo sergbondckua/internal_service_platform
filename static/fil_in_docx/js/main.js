@@ -93,4 +93,35 @@ function checkTaskStatus(taskId, attempt = 1, maxAttempts = 10) {
         });
 }
 
+document.addEventListener("DOMContentLoaded", function () {
+    const legalFormSelect = document.querySelector("select[name='legal_form']");
+    const fullNameInput = document.querySelector("input[name='full_name']");
+    const shortNameCheckbox = document.querySelector("input[name='is_short_name']");
 
+    const shortNameContainer = document.createElement("div");
+    shortNameContainer.id = "short-name-display";
+    shortNameContainer.classList.add("mt-2", "text-muted");
+
+    const checkboxParent = shortNameCheckbox.closest(".form-check");
+    checkboxParent.appendChild(shortNameContainer);
+
+    function updateShortName() {
+        if (shortNameCheckbox.checked) {
+            const legalForm = legalFormSelect.options[legalFormSelect.selectedIndex]?.text.trim() || "";
+            const fullName = fullNameInput.value.trim();
+            if (legalForm && fullName) {
+                shortNameContainer.textContent = `${legalForm} "${fullName.toUpperCase()}"`;
+            } else {
+                shortNameContainer.textContent = "Оберіть юридичну форму та заповніть повне найменування.";
+            }
+        } else {
+            shortNameContainer.textContent = "";
+        }
+    }
+
+    legalFormSelect.addEventListener("change", updateShortName);
+    fullNameInput.addEventListener("input", updateShortName);
+    shortNameCheckbox.addEventListener("change", updateShortName);
+
+    updateShortName();
+});
