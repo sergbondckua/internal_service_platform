@@ -126,21 +126,20 @@ class PartyDataForm(forms.Form):
             attrs={
                 "class": "form-control",
                 "size": "50",
-                "placeholder": '"БАРВІНОК"',
+                "placeholder": "БАРВІНОК",
             }
         ),
     )
-    short_name = forms.CharField(
-        label="Скорочена назва",
-        max_length=255,
+    is_short_name = forms.BooleanField(
+        label="Коротке найменування юр. особи",
         required=False,
-        widget=forms.TextInput(
+        widget=forms.CheckboxInput(
             attrs={
-                "class": "form-control",
-                "size": "30",
-                "placeholder": 'ОСББ "БАРВІНОК"',
+                "class": "form-check-input",
+                "type": "checkbox",
+                "checked": True,
             }
-        ),
+        )
     )
     city_obj_type = forms.ChoiceField(
         label="Топонімічна назва",

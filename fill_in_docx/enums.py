@@ -13,7 +13,6 @@ class LegalFormChoices(TextChoices):
     PP = "ПРИВАТНЕ ПІДПРИЄМСТВО", "ПП"
     KP = "КОМУНАЛЬНЕ ПІДПРИЄМСТВО", "КП"
     MU = "Військова частина", "ВЧ"
-    WITHOUT = " ", "Не вказувати"
 
 
 class PersonPositionChoices(TextChoices):

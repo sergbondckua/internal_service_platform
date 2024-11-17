@@ -70,11 +70,7 @@ class DataGenerator:
             "from_date": self.party_data.date_contract.strftime('"%d" %B %Y"'),
             "for_osbb_zhbk": for_osbb_zhbk,
             "party_one": self.party_data.full_name.upper(),
-            "party_one_short_name": (
-                self.party_data.short_name.upper()
-                if self.party_data.short_name
-                else self.party_data.full_name.upper()
-            ),
+            "party_one_short_name": self.party_data.short_name.upper(),
             "person_position": self.party_data.person_position,
             "genitive_person_position": self.genitive_name.to_genitive(
                 self.party_data.person_position

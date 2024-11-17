@@ -1,3 +1,4 @@
+from fill_in_docx.enums import LegalFormChoices
 from fill_in_docx.managers.party_data import PartyData
 
 
@@ -9,9 +10,25 @@ def create_party_data(form_data):
     :return: Ініціалізований об'єкт PartyData.
     """
     # Формування повної назви організації
-    full_name_organisation = (
-        f"{form_data['legal_form']} {form_data['full_name'].strip()}"
-    )
+    name = form_data["full_name"].strip(' "')
+    full_name_organisation = f'{form_data["legal_form"]} "{name}"'
+
+    # Формування короткої назви організації
+    if form_data.get("is_short_name"):
+        legal_form_label = next(
+            (
+                choice[1]
+                for choice in LegalFormChoices.choices
+                if choice[0] == form_data.get("legal_form")
+            )
+        )
+        short_name_organisation = (
+            f'{legal_form_label} "{name}"'
+            if legal_form_label
+            else full_name_organisation
+        )
+    else:
+        short_name_organisation = full_name_organisation
 
     # Формування адреси
     address = (
@@ -41,9 +58,7 @@ def create_party_data(form_data):
             "old_date_contract", ""
         ),  # Дата попереднього договору
         full_name=full_name_organisation,  # Повна назва організації
-        short_name=form_data.get(
-            "short_name", ""
-        ),  # Скорочена назва (опційно)
+        short_name=short_name_organisation,  # Скорочена назва (опційно)
         address=address,  # Адреса організації
         person_position=form_data[
             "person_position"
