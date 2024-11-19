@@ -21,6 +21,7 @@ class PersonPositionChoices(TextChoices):
     CHAIRMAN = "Голова правління", "Голова правління"
     DIRECTOR = "Директор", "Директор"
     HEADMAN = "Начальник", "Начальник"
+    HEAD = "Керівник", "Керівник"
     COMMANDER = "Командир", "Командир"
     ACTING_DIRECTOR = (
         "Виконуючий обов'язки директора",
