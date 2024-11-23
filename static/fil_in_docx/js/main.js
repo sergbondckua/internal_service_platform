@@ -125,3 +125,49 @@ document.addEventListener("DOMContentLoaded", function () {
 
     updateShortName();
 });
+
+// Автозаповнення назви вулиці
+$(document).ready(function () {
+    // Додаємо autocomplete до поля street_name
+    $("#id_street_name").autocomplete({
+        source: function (request, response) {
+            // Перевіряємо значення поля "city"
+            const selectedCity = $("#id_city").val(); // Отримуємо значення з поля city
+            if (selectedCity === "Черкаси") { // Перевіряємо, чи вибрано "Черкаси"
+                $.ajax({
+                    url: "/api/v1/streets/", // Відносний шлях до API
+                    method: "GET",
+                    dataType: "json",
+                    success: function (data) {
+                        // Фільтруємо дані за полями `name` та `old_name`
+                        const filtered = data.filter(item =>
+                            item.name.toLowerCase().includes(request.term.toLowerCase()) ||
+                            item.old_name.toLowerCase().includes(request.term.toLowerCase())
+                        );
+
+                        // Форматуємо дані для автозаповнення
+                        response(filtered.map(item => ({
+                            label: `${item.prefix} ${item.name} ${item.old_name ? `(раніше: ${item.old_prefix} ${item.old_name})` : ''}`,
+                            value: item.name // Тільки `name` буде вставлено в поле
+                        })));
+                    },
+                    error: function () {
+                        console.error("Не вдалося отримати дані з API.");
+                    }
+                });
+            } else {
+                response([]); // Якщо місто не "Черкаси", автозаповнення не працює
+            }
+        },
+        minLength: 2, // Кількість символів для початку пошуку
+        delay: 300 // Затримка перед виконанням запиту (мс)
+    });
+
+    // Якщо значення поля city змінюється, очищаємо поле street_name
+    $("#id_city").on("change", function () {
+        const selectedCity = $(this).val();
+        if (selectedCity !== "Черкаси") {
+            $("#id_street_name").val(""); // Очищаємо поле street_name
+        }
+    });
+});

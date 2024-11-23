@@ -11,3 +11,9 @@ footer {
 div .bgn {
     background-color: #6022b4;
 }
+.ui-autocomplete {
+    max-height: 200px;
+    overflow-y: auto; /* Прокрутка, якщо багато елементів */
+    overflow-x: hidden;
+    z-index: 1000; /* Щоб перекрити інші елементи */
+}
