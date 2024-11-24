@@ -59,6 +59,11 @@ header h1 {
     text-decoration: underline;
 }
 
+.toolbox-item-link {
+  text-decoration: none;
+  color: inherit;
+}
+
 footer {
     background: #6022b4;
     color: #fff;
