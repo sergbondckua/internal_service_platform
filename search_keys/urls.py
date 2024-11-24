@@ -3,7 +3,8 @@ from django.urls import path
 from search_keys import views
 
 urlpatterns = [
-    path("", views.CellInfoView.as_view(), name="cell_info"),
+    path("", views.DashboardView.as_view(), name="dashboard"),
+    path("search_key/", views.CellInfoView.as_view(), name="cell_info"),
     path(
         "street_autocomplete/",
         views.StreetAutocompleteView.as_view(),

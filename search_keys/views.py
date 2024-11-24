@@ -14,6 +14,10 @@ from search_keys.serializers import (
 from search_keys.forms import CellSearchForm
 from search_keys.models import Building, Street, Cell, Box
 
+class DashboardView(generic.TemplateView):
+    """View for dashboard page."""
+
+    template_name = "dashboard/index.html"
 
 class CellInfoView(generic.TemplateView):
     """

@@ -1,0 +1,29 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+
+{% block title %}Головна - Панель Інструментів{% endblock %}
+
+{% block content %}
+  <div class="toolbox">
+    <!-- Tool 1 -->
+    <div class="toolbox-item">
+      <img src="{% static 'dashboard/images/search-icon.png' %}" alt="Пошук ключа">
+      <h3>Пошук ключа</h3>
+      <a href="{% url 'search_keys:cell_info' %}">Перейти до сервісу</a>
+    </div>
+
+    <!-- Tool 2 -->
+    <div class="toolbox-item">
+      <img src="{% static 'dashboard/images/labels-icon.png' %}" alt="Друк наліпок">
+      <h3>Друк наліпок</h3>
+      <a href="{% url 'labels_print:tag_cell_form' %}">Перейти до сервісу</a>
+    </div>
+
+    <!-- Tool 3 -->
+    <div class="toolbox-item">
+      <img src="{% static 'dashboard/images/contract-icon.png' %}" alt="Створення договору">
+      <h3>Створення договору</h3>
+      <a href="{% url 'fill_in_docx:generate_contract' %}">Перейти до сервісу</a>
+    </div>
+  </div>
+{% endblock %}
