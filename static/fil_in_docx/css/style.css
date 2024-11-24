@@ -1,9 +1,10 @@
 body {
-    background-color: #ffffcc;
+    /*background-color: #f8f9fa; !* Це колір фону #ffffcc;*!*/
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
     font-family: 'Roboto', sans-serif;
 }
 header {
-    background-color: #ffffcc;
+    /*background-color: #f8f9fa;*/
 }
 footer {
     background-color: #fffa90;
