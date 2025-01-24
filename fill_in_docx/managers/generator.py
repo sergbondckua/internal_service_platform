@@ -67,7 +67,7 @@ class DataGenerator:
             "current_year_short": years["current_year_short"],
             "last_year_full": years["last_year_full"],
             "city": self.party_data.city,
-            "from_date": self.party_data.date_contract.strftime('"%d" %B %Y"'),
+            "from_date": self.party_data.date_contract.strftime('"%d" %B %Y'),
             "for_osbb_zhbk": for_osbb_zhbk,
             "party_one": self.party_data.full_name.upper(),
             "party_one_short_name": self.party_data.short_name.upper(),
