@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Парсер платіжних рядків</title>
+  <style>
+      :root {
+          --color-primary: #0078d4;
+          --color-primary-hover: #005a9e;
+          --color-danger: #d73a49;
+          --color-warning-text: #b54a00;
+          --color-warning-bg: #fff8e5;
+          --color-warning-border: #ffc107;
+          --color-success: #28a745;
+          --font-color-base: #24292e;
+          --font-color-secondary: #586069;
+          --border-color: #e1e4e8;
+          --background-color: #f6f8fa;
+          --background-content: #ffffff;
+          --border-radius: 6px;
+      }
+
+      * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+      }
+
+      body {
+          font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+          background-color: var(--background-color);
+          color: var(--font-color-base);
+          min-height: 100vh;
+          padding: 20px;
+      }
+
+      .container {
+          max-width: 900px;
+          margin: 20px auto;
+          background: var(--background-content);
+          border: 1px solid var(--border-color);
+          border-radius: var(--border-radius);
+          padding: 40px;
+      }
+
+      .header {
+          text-align: center;
+          margin-bottom: 30px;
+      }
+
+      .header h1 {
+          font-size: 2em;
+          font-weight: 600;
+          margin-bottom: 8px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 10px;
+      }
+
+      .header h1 svg {
+          width: 32px;
+          height: 32px;
+          fill: var(--color-primary);
+      }
+
+      .header p {
+          color: var(--font-color-secondary);
+          font-size: 1.1em;
+      }
+
+      .input-section {
+          margin-bottom: 25px;
+      }
+
+      .input-section label {
+          display: block;
+          margin-bottom: 8px;
+          font-weight: 600;
+          font-size: 1em;
+      }
+
+      .input-section textarea {
+          width: 100%;
+          height: 150px;
+          padding: 12px;
+          border: 1px solid var(--border-color);
+          border-radius: var(--border-radius);
+          font-size: 14px;
+          font-family: 'Consolas', 'Courier New', monospace;
+          resize: vertical;
+          transition: border-color 0.2s ease, box-shadow 0.2s ease;
+      }
+
+      .input-section textarea:focus {
+          outline: none;
+          border-color: var(--color-primary);
+          box-shadow: 0 0 0 3px rgba(0, 120, 212, 0.2);
+      }
+
+      .buttons {
+          display: flex;
+          gap: 15px;
+          margin-bottom: 30px;
+          flex-wrap: wrap;
+      }
+
+      .btn {
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          padding: 10px 20px;
+          border: 1px solid transparent;
+          border-radius: var(--border-radius);
+          cursor: pointer;
+          font-size: 15px;
+          font-weight: 600;
+          transition: all 0.2s ease;
+          text-decoration: none;
+      }
+
+      .btn svg {
+          width: 16px;
+          height: 16px;
+      }
+
+      .btn-primary {
+          background: var(--color-primary);
+          color: white;
+      }
+
+      .btn-primary svg {
+          fill: white;
+      }
+
+      .btn-primary:hover {
+          background: var(--color-primary-hover);
+      }
+
+      .btn-clear {
+          background: var(--background-content);
+          color: var(--color-danger);
+          border-color: #d73a494d;
+      }
+
+      .btn-clear svg {
+          fill: var(--color-danger);
+      }
+
+      .btn-clear:hover {
+          background: var(--color-danger);
+          color: white;
+          border-color: var(--color-danger);
+      }
+
+      .btn-clear:hover svg {
+          fill: white;
+      }
+
+      .results {
+          margin-top: 20px;
+          display: flex;
+          flex-direction: column;
+          gap: 25px;
+      }
+
+      .result-box {
+          background: var(--background-content);
+          border: 1px solid var(--border-color);
+          border-radius: var(--border-radius);
+      }
+
+      .result-header {
+          font-weight: 600;
+          color: var(--font-color-base);
+          font-size: 1.1em;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 15px 20px;
+          border-bottom: 1px solid var(--border-color);
+      }
+
+      .copy-btn {
+          padding: 6px 12px;
+          background: var(--background-color);
+          color: var(--font-color-base);
+          border: 1px solid var(--border-color);
+          border-radius: var(--border-radius);
+          cursor: pointer;
+          font-size: 12px;
+          font-weight: 500;
+          transition: all 0.2s ease;
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+      }
+
+      .copy-btn svg {
+          width: 14px;
+          height: 14px;
+          fill: var(--font-color-secondary);
+      }
+
+      .copy-btn:hover {
+          background: #eef0f2;
+      }
+
+      .copy-btn.copied {
+          background: #dcffe4;
+          color: var(--color-success);
+          border-color: var(--color-success);
+      }
+
+      .copy-btn.copied svg {
+          fill: var(--color-success);
+      }
+
+      .result-content {
+          font-family: 'Consolas', 'Courier New', monospace;
+          background: var(--background-color);
+          padding: 20px;
+          white-space: pre-wrap;
+          word-break: break-all;
+          font-size: 14px;
+          line-height: 1.5;
+          border-bottom-left-radius: var(--border-radius);
+          border-bottom-right-radius: var(--border-radius);
+      }
+
+      .table-preview {
+          overflow-x: auto;
+          padding: 20px;
+      }
+
+      .table-preview table {
+          width: 100%;
+          border-collapse: collapse;
+      }
+
+      .table-preview th, .table-preview td {
+          border: 1px solid var(--border-color);
+          padding: 12px 15px;
+          text-align: left;
+          font-size: 14px;
+          vertical-align: top;
+      }
+
+      .table-preview th {
+          background-color: var(--background-color);
+          font-weight: 600;
+      }
+
+      .table-preview tbody tr:nth-child(even) {
+          background-color: var(--background-color);
+      }
+
+      .field-list {
+          list-style-type: none;
+          padding: 10px 20px 20px;
+      }
+
+      .field-item {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 12px 0;
+          border-bottom: 1px solid var(--border-color);
+          font-size: 14px;
+      }
+
+      .field-item:last-child {
+          border-bottom: none;
+      }
+
+      .field-label {
+          font-weight: 500;
+          color: var(--font-color-secondary);
+          flex-shrink: 0;
+          margin-right: 15px;
+      }
+
+      .field-value {
+          font-family: 'Consolas', 'Courier New', monospace;
+          background-color: var(--background-color);
+          padding: 4px 8px;
+          border-radius: 4px;
+          text-align: right;
+          overflow-wrap: break-word;
+          word-break: break-all;
+          margin-right: 15px;
+          flex-grow: 1;
+      }
+
+      .field-item .copy-btn {
+          flex-shrink: 0;
+      }
+
+      .notification {
+          position: fixed;
+          top: 20px;
+          left: 50%;
+          transform: translateX(-50%);
+          padding: 12px 25px;
+          border-radius: var(--border-radius);
+          border: 1px solid transparent;
+          z-index: 1000;
+          font-size: 15px;
+          font-weight: 500;
+          box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+          display: flex;
+          align-items: center;
+          gap: 10px;
+      }
+
+      .notification svg {
+          width: 20px;
+          height: 20px;
+      }
+
+      .notification.error {
+          background: #fff5f5;
+          color: #c53030;
+          border-color: #fc8181;
+      }
+
+      .notification.error svg {
+          fill: #c53030;
+      }
+
+      .notification.success {
+          background: #f0fff4;
+          color: #2f855a;
+          border-color: #9ae6b4;
+      }
+
+      .notification.success svg {
+          fill: #2f855a;
+      }
+
+      .error-report {
+          border: 1px solid var(--color-warning-border);
+          background-color: var(--color-warning-bg);
+      }
+
+      .error-report .result-header {
+          color: var(--color-warning-text);
+          border-bottom: 1px solid var(--color-warning-border);
+      }
+
+      .error-report-list {
+          list-style-type: none;
+          padding: 20px;
+          font-size: 14px;
+      }
+
+      .error-report-list li {
+          padding: 10px;
+          border-bottom: 1px solid var(--border-color);
+      }
+
+      .error-report-list li:last-child {
+          border-bottom: none;
+      }
+
+      .error-report-list b {
+          color: var(--color-danger);
+      }
+
+      .error-report-list code {
+          display: block;
+          background-color: #fcebeb;
+          color: #721c24;
+          padding: 5px;
+          border-radius: 4px;
+          margin-top: 5px;
+          font-family: 'Consolas', 'Courier New', monospace;
+      }
+
+      /* Стилі для акардіону */
+      .accordion {
+          background: var(--background-content);
+          border: 1px solid var(--border-color);
+          border-radius: var(--border-radius);
+          margin-bottom: 10px;
+          overflow: hidden;
+      }
+
+      .accordion-header {
+          padding: 15px 20px;
+          cursor: pointer;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          font-weight: 600;
+          background-color: var(--background-color);
+          transition: background-color 0.2s ease;
+      }
+
+      .accordion-header:hover {
+          background-color: #eef0f2;
+      }
+
+      .accordion-header .icon {
+          width: 16px;
+          height: 16px;
+          transition: transform 0.3s ease;
+          fill: var(--font-color-secondary);
+      }
+
+      .accordion-header .icon.rotated {
+          transform: rotate(180deg);
+      }
+
+      .accordion-content {
+          max-height: 0;
+          overflow: hidden;
+          transition: max-height 0.3s ease;
+      }
+
+      .accordion-content.expanded {
+          max-height: 1500px; /* Достатньо велике значення для розкриття */
+      }
+
+      @media (max-width: 768px) {
+          body {
+              padding: 10px;
+          }
+
+          .container {
+              padding: 20px;
+              margin: 10px 0;
+          }
+
+          .header h1 {
+              font-size: 1.8em;
+          }
+
+          .buttons {
+              flex-direction: column;
+          }
+
+          .btn {
+              width: 100%;
+              justify-content: center;
+          }
+
+          .field-item {
+              flex-direction: column;
+              align-items: flex-start;
+              gap: 8px;
+          }
+
+          .field-value {
+              text-align: left;
+              width: 100%;
+          }
+
+          .accordion-header {
+              padding: 12px 15px;
+          }
+      }
+  </style>
+</head>
+<body>
+<div id="notification-area"></div>
+<div class="container">
+  <div class="header">
+    <h1>
+      <svg viewBox="0 0 24 24">
+        <path
+            d="M20,2H4C2.9,2,2,2.9,2,4v16c0,1.1,0.9,2,2,2h16c1.1,0,2-0.9,2-2V4C22,2.9,21.1,2,20,2z M8,20H4v-4h4V20z M8,14H4v-4h4V14z M8,8H4V4h4V8z M14,20h-4v-4h4V20z M14,14h-4v-4h4V14z M14,8h-4V4h4V8z M20,20h-4v-4h4V20z M20,14h-4v-4h4V14z M20,8h-4V4h4V8z"/>
+      </svg>
+      Парсер платіжних рядків
+    </h1>
+    <p>Вставте один або декілька рядків для конвертації</p>
+  </div>
+
+  <div class="input-section">
+    <label for="inputText">Вставте рядки для парсингу (кожен з нового рядка):</label>
+    <textarea id="inputText"
+              placeholder="ID № 610037; ДП Черкаський НДІТЕХІМ; №сч 578 от 31.07.2025; 197,62ГРН; Оренда; (ТОВ &quot;ІНТРА.КОМ&quot;)
+ID № 610038; ФОП Іваненко І.І.; №сч 12 от 01.08.2025; 1200,00ГРН; Послуги; (ТОВ &quot;ІНТРА.КОМ&quot;)"></textarea>
+  </div>
+
+  <div class="buttons">
+    <button class="btn btn-primary" onclick="parseData()">
+      <svg viewBox="0 0 24 24">
+        <path
+            d="M17.65,6.35C16.2,4.9,14.21,4,12,4c-4.42,0-7.99,3.58-7.99,8s3.57,8,7.99,8c3.73,0,6.84-2.55,7.73-6h-2.08c-0.82,2.33-3.04,4-5.65,4c-3.31,0-6-2.69-6-6s2.69-6,6-6c1.66,0,3.14,0.69,4.22,1.78L13,11h7V4L17.65,6.35z"/>
+      </svg>
+      Парсити
+    </button>
+    <button class="btn btn-clear" onclick="clearAll()">
+      <svg viewBox="0 0 24 24">
+        <path d="M6,19c0,1.1,0.9,2,2,2h8c1.1,0,2-0.9,2-2V7H6V19z M19,4h-3.5l-1-1h-5l-1,1H5v2h14V4z"/>
+      </svg>
+      Очистити
+    </button>
+  </div>
+
+  <div id="results" class="results"></div>
+</div>
+
+<script>
+    function escapeAttribute(value) {
+        if (!value) return '';
+        return value
+            .replace(/&/g, '&amp;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/\n/g, '&#10;')
+            .replace(/\r/g, '&#13;')
+            .replace(/\t/g, '&#9;');
+    }
+
+    function showNotification(message, type = 'success') {
+        const area = document.getElementById('notification-area');
+        const notification = document.createElement('div');
+        notification.className = `notification ${type}`;
+        const icon = type === 'success' ? '<svg viewBox="0 0 24 24"><path d="M12,2C6.48,2,2,6.48,2,12s4.48,10,10,10,10-4.48,10-10S17.52,2,12,2z M10,17l-5-5l1.41-1.41L10,14.17l7.59-7.59L19,8l-9,9z"/></svg>' : '<svg viewBox="0 0 24 24"><path d="M12,2C6.48,2,2,6.48,2,12s4.48,10,10,10,10-4.48,10-10S17.52,2,12,2z M13,17h-2v-2h2V17z M13,13h-2V7h2V13z"/></svg>';
+        notification.innerHTML = `${icon}<span>${message}</span>`;
+        area.appendChild(notification);
+        setTimeout(() => {
+            notification.remove();
+        }, 3500);
+    }
+
+    function parsePaymentString(paymentString) {
+        try {
+            const parts = paymentString.split('; ');
+
+            if (parts.length !== 6) {
+                throw new Error(`Очікувалося 6 частин, отримано ${parts.length}`);
+            }
+
+            const [directumId, holder, order, cost, appointment, payer] = parts;
+
+            // Отримуємо поточну дату в форматі dd.mm.yyyy
+            const now = new Date();
+            const dateOfEntry = now.toLocaleDateString('uk-UA', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric'
+            }).replace(/\//g, '.');
+
+            const parseData = {
+                num_order: order.split(' ')[1],
+                date_order: order.split(' ').pop(),
+                cost: cost.replace(/[^\d,]/g, ''),
+                payer: payer.replace(/[()\"]/g, '').trim(),
+                holder: holder.trim(),
+                appointment: appointment.trim(),
+                date_of_entry: dateOfEntry,
+                directum_id: directumId.split(' ').pop()
+            };
+
+            return parseData;
+
+        } catch (error) {
+            throw new Error(`Помилка парсингу: ${error.message}`);
+        }
+    }
+
+    function copyToClipboard(button) {
+        const text = button.getAttribute('data-clipboard-text');
+        if (!text) return;
+        navigator.clipboard.writeText(text).then(() => {
+            const originalContent = button.innerHTML;
+            const copyIcon = '<svg viewBox="0 0 24 24"><path d="M16,1H4C2.9,1,2,1.9,2,3v14h2V3h12V1z M19,5H8C6.9,5,6,5.9,6,7v14c0,1.1,0.9,2,2,2h11c1.1,0,2-0.9,2-2V7C21,5.9,20.1,5,19,5z M19,21H8V7h11V21z"/></svg>';
+            const copiedIcon = '<svg viewBox="0 0 24 24"><path d="M9,16.17L4.83,12l-1.42,1.41L9,19,21,7l-1.41-1.41L9,16.17z"/></svg>';
+
+            const originalText = button.querySelector('span')?.textContent || 'Копіювати';
+            button.innerHTML = `${copiedIcon} <span>Скопійовано!</span>`;
+            button.classList.add('copied');
+
+            if (originalText.toLowerCase().includes('все')) {
+                showNotification('Блок даних скопійовано! Тепер можна вставити в Excel.');
+            }
+
+            setTimeout(() => {
+                button.innerHTML = `${copyIcon} <span>${originalText}</span>`;
+                button.classList.remove('copied');
+            }, 1500);
+        }).catch(err => {
+            console.error('Помилка копіювання: ', err);
+            showNotification('Не вдалося скопіювати автоматично.', 'error');
+        });
+    }
+
+    function clearAll() {
+        document.getElementById('inputText').value = '';
+        document.getElementById('results').innerHTML = '';
+    }
+
+    function toggleAccordion(header) {
+        const content = header.nextElementSibling;
+        const icon = header.querySelector('.icon');
+
+        if (content.classList.contains('expanded')) {
+            content.classList.remove('expanded');
+            icon.classList.remove('rotated');
+        } else {
+            content.classList.add('expanded');
+            icon.classList.add('rotated');
+        }
+    }
+
+    function parseData() {
+        const inputText = document.getElementById('inputText').value.trim();
+        const resultsDiv = document.getElementById('results');
+        resultsDiv.innerHTML = '';
+        if (!inputText) {
+            showNotification('Будь ласка, введіть рядки для парсингу', 'error');
+            return;
+        }
+
+        const lines = inputText.split('\n').filter(line => line.trim() !== '');
+        const successfulParses = [];
+        const parsingErrors = [];
+
+        lines.forEach((line, index) => {
+            try {
+                const result = parsePaymentString(line);
+                successfulParses.push({...result, originalIndex: index + 1});
+            } catch (error) {
+                parsingErrors.push({lineNumber: index + 1, line: line, error: error.message});
+            }
+        });
+
+        let resultsHTML = '';
+        const copyIcon = '<svg viewBox="0 0 24 24"><path d="M16,1H4C2.9,1,2,1.9,2,3v14h2V3h12V1z M19,5H8C6.9,5,6,5.9,6,7v14c0,1.1,0.9,2,2,2h11c1.1,0,2-0.9,2-2V7C21,5.9,20.1,5,19,5z M19,21H8V7h11V21z"/></svg>';
+
+        if (successfulParses.length > 0) {
+            const excelDataRows = successfulParses.map(result => [
+                result.num_order, result.date_order, result.cost, "",
+                result.payer, result.holder, result.appointment, result.date_of_entry
+            ]);
+            const tabSeparatedBlock = excelDataRows.map(row => row.join('\t')).join('\n');
+            const tableBody = excelDataRows.map(row => `<tr>${row.map(d => `<td>${d || '&nbsp;'}</td>`).join('')}</tr>`).join('');
+            const headers = ["№ счета", "Дата", "Сума,грн", "ПДВ", "Назва підприємства", "Підприємство-отримувач", "Призначення платежу", "Дата внесення"];
+
+            // 1. Combined block for quick Excel pasting
+            resultsHTML += `
+                    <div class="result-box">
+                        <div class="result-header">
+                            📋 Загальний блок для Excel (${successfulParses.length} ряд.)
+                            <button class="copy-btn" data-clipboard-text="${escapeAttribute(tabSeparatedBlock)}" onclick="copyToClipboard(this)">
+                                ${copyIcon} <span>Копіювати все</span>
+                            </button>
+                        </div>
+                        <div class="result-content">${tabSeparatedBlock}</div>
+                        <div class="result-header">
+                            <p class="error-report"><b>Увага!</b> Дані для колонки «ПДВ» відсутні. У разі, якщо у рахунку зазначено суму ПДВ, її необхідно внести вручну.</p>
+                        </div>
+                    </div>
+                `;
+
+            // 2. Accordion for individual fields
+            if (successfulParses.length > 1) {
+                resultsHTML += `
+                        <div class="result-box">
+                            <div class="result-header">
+                                📌 Окремі поля (${successfulParses.length} рядків)
+                            </div>
+                    `;
+            }
+
+            const fieldLabels = {
+                directum_id: "ID Directum", num_order: "№ Рахунку", date_order: "Дата рахунку",
+                cost: "Сума, грн", payer: "Назва підприємства", holder: "Підприємство-отримувач",
+                appointment: "Призначення платежу", date_of_entry: "Дата внесення"
+            };
+
+            successfulParses.forEach((result, index) => {
+                let fieldsList = '';
+                for (const key in fieldLabels) {
+                    const value = String(result[key] || '');
+                    fieldsList += `
+                            <li class="field-item">
+                                <span class="field-label">${fieldLabels[key]}</span>
+                                <span class="field-value">${result[key] || '–'}</span>
+                                <button class="copy-btn" data-clipboard-text="${escapeAttribute(value)}" onclick="copyToClipboard(this)">
+                                     ${copyIcon} <span>Копіювати</span>
+                                </button>
+                            </li>`;
+                }
+
+                resultsHTML += `
+                        <div class="accordion">
+                            <div class="accordion-header" onclick="toggleAccordion(this)">
+                                <span>Рядок #${result.originalIndex}: ${result.holder.substring(0, 30)}, Рах№${result.num_order}${result.holder.length > 30 ? '...' : ''}</span>
+                                <svg class="icon" viewBox="0 0 24 24" width="16" height="16">
+                                    <path d="M7 10l5 5 5-5z"/>
+                                </svg>
+                            </div>
+                            <div class="accordion-content">
+                                <ul class="field-list">${fieldsList}</ul>
+                            </div>
+                        </div>
+                    `;
+            });
+
+            if (successfulParses.length > 1) {
+                resultsHTML += `</div>`; // Close result-box
+            }
+
+            // 3. Preview Table
+            resultsHTML += `
+                    <div class="result-box">
+                        <div class="result-header">📑 Попередній перегляд таблиці</div>
+                        <div class="table-preview">
+                             <table>
+                                <thead><tr>${headers.map(h => `<th>${h}</th>`).join('')}</tr></thead>
+                                <tbody>${tableBody}</tbody>
+                            </table>
+                        </div>
+                    </div>
+                `;
+        }
+
+        // 4. Error report
+        if (parsingErrors.length > 0) {
+            const errorList = parsingErrors.map(err =>
+                `<li>Рядок ${err.lineNumber}: <b>${err.error}</b><code>${err.line}</code></li>`
+            ).join('');
+
+            resultsHTML += `
+                    <div class="result-box error-report">
+                        <div class="result-header">⚠️ Звіт про помилки (${parsingErrors.length})</div>
+                        <ul class="error-report-list">${errorList}</ul>
+                    </div>`;
+        }
+
+        resultsDiv.innerHTML = resultsHTML;
+
+        // Final Notification
+        if (successfulParses.length > 0 && parsingErrors.length === 0) {
+            showNotification(`Успішно оброблено ${successfulParses.length} рядків!`);
+        } else if (successfulParses.length > 0 && parsingErrors.length > 0) {
+            showNotification(`Успішно: ${successfulParses.length}, з помилками: ${parsingErrors.length}`, 'error');
+        } else if (parsingErrors.length > 0) {
+            showNotification(`Не вдалося обробити жодного рядка. Знайдено помилок: ${parsingErrors.length}`, 'error');
+        }
+    }
+
+    document.getElementById('inputText').addEventListener('keydown', function (e) {
+        if (e.ctrlKey && e.key === 'Enter') {
+            e.preventDefault();
+            parseData();
+        }
+    });
+</script>
+</body>
+</html>

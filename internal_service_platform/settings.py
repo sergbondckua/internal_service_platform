@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     "search_keys.apps.SearchKeysConfig",
     "labels_print.apps.LabelsPrintConfig",
     "fill_in_docx.apps.FillInDocxConfig",
+    "parser.apps.ParserConfig",
 ]
 
 MIDDLEWARE = [

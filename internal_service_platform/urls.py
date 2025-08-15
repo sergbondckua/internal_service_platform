@@ -9,6 +9,7 @@ urlpatterns = [
     path("label/", include("labels_print.urls")),
     path("api-auth/", include("rest_framework.urls")),
     path("contract/", include("fill_in_docx.urls")),
+    path("parser/", include("parser.urls")),
 ]
 if settings.DEBUG:
     # Serve media files
